@@ -53,6 +53,7 @@
        */
       function uploadFile(evt) {
         gapi.client.load('drive', 'v2', function() {
+          console.log("uploading");
           var file = evt.target.files[0];
           insertFile(file);
         });
