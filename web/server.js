@@ -9,13 +9,18 @@ console.log("server running");
 app.configure(function() {
 	app.use(express.bodyParser());
 	app.use(app.router);
-	app.use(express.static(__dirname +'/views'));
+	app.use(express.static(__dirname));
 	app.use(function(err, req, res, next){
 		console.error(err.stack);
 		res.send(500, 'Something broke!');
 	});
 });
 
-app.get("/", function(req, res) {
-	res.sendfile('./views/quickstart.html');
+app.get("/a", function(req, res) {
+	res.sendfile('./views/sample_upload.html');
 });
+
+app.get("/b", function(req, res) {
+	res.sendfile('./views/all_files.html');
+});
+
