@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MEducation</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="register_as_proctor"><b><u>Register as a Proctor</u></b></string>
+    <string name="register_as_teacher"><b><u>Register as a Teacher</u></b></string>
+
+    <string-array name="student_names">
+        <item>Juan Luna</item>
+        <item>Jose Rizal</item>
+        <item>Yoshino Shinobu</item>
+        <item>Miguel Sanchez</item>
+        <item>JV Vitug</item>
+    </string-array>
+
+</resources>
