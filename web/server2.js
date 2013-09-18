@@ -24,7 +24,7 @@ app.configure(function() {
   });
 });
 
-app.get("/", function(req, res) {//displays all the files in sample folder of remote computer
+app.get("/", function(req, res) {//displays all the files in sample folder of remote computer. returns in JSON format
   ftp.ls("./sample", function(err, res2) {
     var json_string = "{";
     res2.forEach(function(file) {
@@ -36,7 +36,7 @@ app.get("/", function(req, res) {//displays all the files in sample folder of re
   });  
 });
 
-app.get('/files/:filename?', function(req, res) {//downloads file from the sample folder of remote computer. needs the filename
+app.get('/files/:filename?', function(req, res) {//downloads file from the sample folder of remote computer. needs the filename in remote (will also have same file name in local)
   ftp.get('./sample/' + req.param("filename"), './sample/' + req.param("filename"), function(hadErr) {
     if (hadErr)
       console.error('There was an error retrieving the file.');
@@ -45,6 +45,9 @@ app.get('/files/:filename?', function(req, res) {//downloads file from the sampl
   });
 });
 
-app.post("/files", function(req, res) {//uploads new file. needs buffer and the filename in destination(save as what)
-
+app.post("/files", function(req, res) {//uploads new file to remote computer's sample folder. needs the filename as parameter in local (will also have same file name in remote)
+  var filePath = "./sample/" + req.param("filename");
+  ftp.put(filePath, filePath, function(err, res2) {
+    res.send("upload complete");
+  });
 });
