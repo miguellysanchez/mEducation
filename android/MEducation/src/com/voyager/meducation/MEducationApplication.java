@@ -2,16 +2,10 @@ package com.voyager.meducation;
 
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
-import com.dropbox.client2.android.AuthActivity;
-import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
 import com.voyager.meducation.activities.LoginActivity;
@@ -32,7 +26,6 @@ public class MEducationApplication extends Application {
 	final static public AccessType ACCESS_TYPE = AccessType.DROPBOX;
 
 	// In the class declaration section:
-	DropboxAPI<AndroidAuthSession> mDropboxApi;
 
 
 	private static final String IS_LOGGED_IN = "is_logged_in";
@@ -41,12 +34,6 @@ public class MEducationApplication extends Application {
 	public void onCreate(){
 		super.onCreate();
 		prefs = getSharedPreferences(MEducationApplication.class.getSimpleName(),MODE_PRIVATE);
-		
-		AndroidAuthSession session = buildSession();
-		mDropboxApi = new DropboxAPI<AndroidAuthSession>(session);
-		checkAppKeySetup();
-		mDropboxApi.getSession().startAuthentication(new LoginActivity());
-
 	}
 
 	public boolean isLoggedIn(){
@@ -91,53 +78,6 @@ public class MEducationApplication extends Application {
 		return prefs;
 	}
 	
-	private AndroidAuthSession buildSession() {
-		AppKeyPair appKeyPair = new AppKeyPair(MEducationApplication.APP_KEY,
-				MEducationApplication.APP_SECRET);
-		AndroidAuthSession session;
-
-		String[] stored = getKeys();
-		if (stored != null) {
-			AccessTokenPair accessToken = new AccessTokenPair(stored[0],
-					stored[1]);
-			session = new AndroidAuthSession(appKeyPair,
-					MEducationApplication.ACCESS_TYPE, accessToken);
-		} else {
-			session = new AndroidAuthSession(appKeyPair,
-					MEducationApplication.ACCESS_TYPE);
-		}
-
-		return session;
-	}
-	
-	
-
-	private void checkAppKeySetup() {
-		// Check to make sure that we have a valid app key
-		if (MEducationApplication.APP_KEY.startsWith("CHANGE")
-				|| MEducationApplication.APP_SECRET.startsWith("CHANGE")) {
-			Toast.makeText(
-					this,
-					"You must apply for an app key and secret from developers.dropbox.com, and add them to the DBRoulette ap before trying it.",
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		// Check if the app has set up its manifest properly.
-		Intent testIntent = new Intent(Intent.ACTION_VIEW);
-		String scheme = "db-" + MEducationApplication.APP_KEY;
-		String uri = scheme + "://" + AuthActivity.AUTH_VERSION + "/test";
-		testIntent.setData(Uri.parse(uri));
-		PackageManager pm = getPackageManager();
-		if (0 == pm.queryIntentActivities(testIntent, 0).size()) {
-			Toast.makeText(
-					this,
-					"URL scheme in your app's "
-							+ "manifest is not set up correctly. You should have a "
-							+ "com.dropbox.client2.android.AuthActivity with the "
-							+ "scheme: " + scheme, Toast.LENGTH_LONG).show();
-		}
-	}
 	
 	
 }
