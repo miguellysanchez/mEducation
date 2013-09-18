@@ -9,10 +9,14 @@ package com.voyager.meducation;
 
 public final class R {
     public static final class anim {
-        public static final int left_slide_in=0x7f040000;
-        public static final int left_slide_out=0x7f040001;
-        public static final int right_slide_in=0x7f040002;
-        public static final int right_slide_out=0x7f040003;
+        public static final int frag_left_slide_in=0x7f040000;
+        public static final int frag_left_slide_out=0x7f040001;
+        public static final int frag_right_slide_in=0x7f040002;
+        public static final int frag_right_slide_out=0x7f040003;
+        public static final int left_slide_in=0x7f040004;
+        public static final int left_slide_out=0x7f040005;
+        public static final int right_slide_in=0x7f040006;
+        public static final int right_slide_out=0x7f040007;
     }
     public static final class array {
         public static final int student_names=0x7f080000;
@@ -46,56 +50,58 @@ public final class R {
         public static final int ic_launcher=0x7f020006;
     }
     public static final class id {
-        public static final int action_camera_test=0x7f0b0027;
-        public static final int action_search=0x7f0b0025;
-        public static final int action_settings=0x7f0b0026;
-        public static final int back=0x7f0b0023;
-        public static final int backLayout=0x7f0b0022;
+        public static final int action_camera_test=0x7f0b0028;
+        public static final int action_search=0x7f0b0026;
+        public static final int action_settings=0x7f0b0027;
+        public static final int back=0x7f0b0024;
+        public static final int backLayout=0x7f0b0023;
         public static final int btnLogin=0x7f0b0004;
-        public static final int btnRegister=0x7f0b000a;
-        public static final int datePickerBirthdate=0x7f0b001d;
-        public static final int dropdownStudentList=0x7f0b0020;
-        public static final int editEmail=0x7f0b0017;
-        public static final int editFirstName=0x7f0b000d;
-        public static final int editLastName=0x7f0b0011;
+        public static final int btnRegister=0x7f0b000b;
+        public static final int datePickerBirthdate=0x7f0b001e;
+        public static final int dropdownStudentList=0x7f0b0021;
+        public static final int editEmail=0x7f0b0018;
+        public static final int editFirstName=0x7f0b000e;
+        public static final int editLastName=0x7f0b0012;
         public static final int editLoginPassword=0x7f0b0002;
         public static final int editLoginUsername=0x7f0b0003;
-        public static final int editMiddleName=0x7f0b000f;
-        public static final int editPassword=0x7f0b001b;
-        public static final int editUsername=0x7f0b0019;
-        public static final int header=0x7f0b0009;
+        public static final int editMiddleName=0x7f0b0010;
+        public static final int editPassword=0x7f0b001c;
+        public static final int editUsername=0x7f0b001a;
+        public static final int fragment_container=0x7f0b0009;
+        public static final int header=0x7f0b000a;
         public static final int listClassrooms=0x7f0b0000;
         public static final int listDashboardTasks=0x7f0b0001;
-        public static final int listSubjects=0x7f0b001e;
+        public static final int listSubjects=0x7f0b001f;
         public static final int meducationLogo=0x7f0b0008;
-        public static final int radioFemale=0x7f0b0015;
-        public static final int radioGender=0x7f0b0013;
-        public static final int radioMale=0x7f0b0014;
-        public static final int scrollRegistrationFields=0x7f0b000b;
-        public static final int surface=0x7f0b001f;
-        public static final int textBirthdate=0x7f0b001c;
-        public static final int textEmail=0x7f0b0016;
-        public static final int textFirstName=0x7f0b000c;
-        public static final int textGender=0x7f0b0012;
-        public static final int textLastName=0x7f0b0010;
-        public static final int textMiddleName=0x7f0b000e;
-        public static final int textPassword=0x7f0b001a;
+        public static final int radioFemale=0x7f0b0016;
+        public static final int radioGender=0x7f0b0014;
+        public static final int radioMale=0x7f0b0015;
+        public static final int scrollRegistrationFields=0x7f0b000c;
+        public static final int surface=0x7f0b0020;
+        public static final int textBirthdate=0x7f0b001d;
+        public static final int textEmail=0x7f0b0017;
+        public static final int textFirstName=0x7f0b000d;
+        public static final int textGender=0x7f0b0013;
+        public static final int textLastName=0x7f0b0011;
+        public static final int textMiddleName=0x7f0b000f;
+        public static final int textPassword=0x7f0b001b;
         public static final int textProctorRegister=0x7f0b0005;
         public static final int textTeacherRegister=0x7f0b0007;
-        public static final int textTitle=0x7f0b0024;
-        public static final int textUsername=0x7f0b0018;
+        public static final int textTitle=0x7f0b0025;
+        public static final int textUsername=0x7f0b0019;
         public static final int textView1=0x7f0b0006;
-        public static final int window_title=0x7f0b0021;
+        public static final int window_title=0x7f0b0022;
     }
     public static final class layout {
         public static final int classrooms_activity=0x7f030000;
-        public static final int dashboard_activity=0x7f030001;
+        public static final int dashboard_fragment=0x7f030001;
         public static final int login_activity=0x7f030002;
-        public static final int registration_activity=0x7f030003;
-        public static final int student_classroom_activity=0x7f030004;
-        public static final int subjects_activity=0x7f030005;
-        public static final int take_exam_photo_activity=0x7f030006;
-        public static final int window_title=0x7f030007;
+        public static final int main_page_activity=0x7f030003;
+        public static final int registration_activity=0x7f030004;
+        public static final int student_classroom_activity=0x7f030005;
+        public static final int subjects_fragment=0x7f030006;
+        public static final int take_exam_photo_activity=0x7f030007;
+        public static final int window_title=0x7f030008;
     }
     public static final class menu {
         public static final int action_bar_menu=0x7f0a0000;

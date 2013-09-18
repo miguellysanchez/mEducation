@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/dropbox-android-sdk-1.5.4.jar" sourcepath="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4.zip"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/httpclient-4.0.3.jar"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/httpmime-4.0.3.jar"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/json_simple-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/smart/Documents/AndroidStuff/dropbox-android-sdk-1.5.4/lib/test/junit-4.10.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
