@@ -25,8 +25,7 @@ public class MEducationApplication extends Application {
 	final static public String APP_SECRET = "czjpvb5x6zclr9r";
 	final static public AccessType ACCESS_TYPE = AccessType.DROPBOX;
 
-	// In the class declaration section:
-
+	private DropboxAPI<AndroidAuthSession> dropboxApi;
 
 	private static final String IS_LOGGED_IN = "is_logged_in";
 	SharedPreferences prefs;
@@ -69,6 +68,14 @@ public class MEducationApplication extends Application {
 	public void setKeys(String key, String secret){
 		prefs.edit().putString(ACCESS_KEY_NAME, key);
         prefs.edit().putString(ACCESS_SECRET_NAME, secret);
+	}
+	
+	public DropboxAPI<AndroidAuthSession> getDropboxApi(){
+		return dropboxApi;
+	}
+	
+	public void setDropboxApi(DropboxAPI<AndroidAuthSession> dbapi){
+		dropboxApi = dbapi;
 	}
 	
 	public SharedPreferences getPrefs(){

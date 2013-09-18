@@ -1,5 +1,15 @@
 package com.voyager.meducation.activities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.Entry;
+import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.session.Session;
+import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
 import com.voyager.meducation.fragments.ClassroomsFragment;
 import com.voyager.meducation.fragments.DashboardFragment;
@@ -14,6 +24,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +41,7 @@ public class MainPageActivity extends Activity implements TabListener{
 	SubjectsFragment mSubjectsFragment;
 	ClassroomsFragment mClassroomsFragment;
 	StudentsFragment mStudentsFragment;
+	DropboxAPI<AndroidAuthSession> dbApi;
 	int currentTab = 0;
 	
 	@Override
@@ -37,6 +49,12 @@ public class MainPageActivity extends Activity implements TabListener{
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
+		dbApi = ((MEducationApplication)getApplication()).getDropboxApi();
+		
+		if(dbApi==null){
+			Log.d(TAG, ">>>FUUUU");
+		}
+		
 		actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -78,8 +96,6 @@ public class MainPageActivity extends Activity implements TabListener{
 				.commit();
 		currentTab = 1;
 		getActionBar().setSelectedNavigationItem(currentTab);
-
-		
 	}
 
 	// /ACTIONS INVOKED BY SUBJECTSFRAGMENT
@@ -174,8 +190,23 @@ public class MainPageActivity extends Activity implements TabListener{
 			onBackPressed();
 			break;
 		case R.id.action_search:
-			Toast.makeText(this, "Menu Item 1 selected", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(getApplicationContext(), "TRYING TO UPLOAD", Toast.LENGTH_LONG).show();
+			File file = new File("working-draft.txt");
+			FileInputStream inputStream;
+			try {
+				inputStream = new FileInputStream(file);
+				try {
+					Entry response = dbApi.putFile("/magnum-opus.txt", inputStream,file.length(), null, null);
+				} catch (DropboxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			 
 			break;
 		case R.id.action_camera_test:
 			Intent examPhotoIntent = new Intent(MainPageActivity.this,

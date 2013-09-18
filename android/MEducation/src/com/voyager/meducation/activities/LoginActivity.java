@@ -46,7 +46,10 @@ public class LoginActivity extends Activity {
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		getActionBar().hide();
 		// /////////////////////
-
+		mDropboxApi.getSession().startAuthentication(LoginActivity.this);
+		((MEducationApplication)getApplication()).setDropboxApi(mDropboxApi);
+		
+		
 		if (((MEducationApplication) getApplication()).isLoggedIn()) {
 			Intent dashboardIntent = new Intent(LoginActivity.this,
 					MainPageActivity.class);
@@ -54,7 +57,6 @@ public class LoginActivity extends Activity {
 
 			startActivity(dashboardIntent);
 		} else {
-			mDropboxApi.getSession().startAuthentication(LoginActivity.this);
 
 			setContentView(R.layout.login_activity);
 
