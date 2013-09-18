@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 
 http.createServer(app).listen(8080);
-console.log("server running");
+console.log("server running at 8080");
 
 //server stuff
 app.configure(function() {
@@ -16,11 +16,14 @@ app.configure(function() {
 	});
 });
 
-app.get("/a", function(req, res) {
+app.get("/a", function(req, res) {//gdocs
 	res.sendfile('./views/sample_upload.html');
 });
 
-app.get("/b", function(req, res) {
+app.get("/b", function(req, res) {//gdocs
 	res.sendfile('./views/all_files.html');
 });
 
+app.get("/", function(req, res) {
+	
+});
