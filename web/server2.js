@@ -26,11 +26,13 @@ app.configure(function() {
 
 app.get("/", function(req, res) {//displays all the files in sample folder of remote computer
   ftp.ls("./sample", function(err, res2) {
-    var text = "";
+    var json_string = "{";
     res2.forEach(function(file) {
-      text+=file.name.toString()+"<br/>";
+      json_string+='"file" : "' + file.name.toString()+'",';
     });
-    res.send(text);
+    json_string=json_string.substring(0,json_string.length-1);
+    json_string+="}"
+    res.send(JSON.parse(json_string));
   });  
 });
 
