@@ -30,16 +30,13 @@ import android.widget.Toast;
 public class LoginActivity extends Activity {
 
 	private static final String TAG = LoginActivity.class.getSimpleName();
-	DropboxAPI<AndroidAuthSession> mDropboxApi;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		// We create a new AuthSession so that we can use the Dropbox API.
-		AndroidAuthSession session = buildSession();
-		mDropboxApi = new DropboxAPI<AndroidAuthSession>(session);
-		checkAppKeySetup();
+		
 		
 		
 		// HIDE THE ACTION BAR
@@ -54,7 +51,6 @@ public class LoginActivity extends Activity {
 
 			startActivity(dashboardIntent);
 		} else {
-			mDropboxApi.getSession().startAuthentication(LoginActivity.this);
 
 			setContentView(R.layout.login_activity);
 
@@ -123,55 +119,6 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
-	private AndroidAuthSession buildSession() {
-		AppKeyPair appKeyPair = new AppKeyPair(MEducationApplication.APP_KEY,
-				MEducationApplication.APP_SECRET);
-		AndroidAuthSession session;
-
-		String[] stored = ((MEducationApplication) getApplication()).getKeys();
-		if (stored != null) {
-			AccessTokenPair accessToken = new AccessTokenPair(stored[0],
-					stored[1]);
-			session = new AndroidAuthSession(appKeyPair,
-					MEducationApplication.ACCESS_TYPE, accessToken);
-		} else {
-			session = new AndroidAuthSession(appKeyPair,
-					MEducationApplication.ACCESS_TYPE);
-		}
-
-		return session;
-	}
-	
-	
-
-	private void checkAppKeySetup() {
-		// Check to make sure that we have a valid app key
-		if (MEducationApplication.APP_KEY.startsWith("CHANGE")
-				|| MEducationApplication.APP_SECRET.startsWith("CHANGE")) {
-			Toast.makeText(
-					this,
-					"You must apply for an app key and secret from developers.dropbox.com, and add them to the DBRoulette ap before trying it.",
-					Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		}
-
-		// Check if the app has set up its manifest properly.
-		Intent testIntent = new Intent(Intent.ACTION_VIEW);
-		String scheme = "db-" + MEducationApplication.APP_KEY;
-		String uri = scheme + "://" + AuthActivity.AUTH_VERSION + "/test";
-		testIntent.setData(Uri.parse(uri));
-		PackageManager pm = getPackageManager();
-		if (0 == pm.queryIntentActivities(testIntent, 0).size()) {
-			Toast.makeText(
-					this,
-					"URL scheme in your app's "
-							+ "manifest is not set up correctly. You should have a "
-							+ "com.dropbox.client2.android.AuthActivity with the "
-							+ "scheme: " + scheme, Toast.LENGTH_LONG).show();
-			finish();
-		}
-	}
 	
 //	@Override
 //	protected void onResume() {
