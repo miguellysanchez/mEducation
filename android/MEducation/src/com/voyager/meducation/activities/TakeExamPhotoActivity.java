@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -55,6 +56,8 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.take_exam_photo_activity);
 
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		// Camera settings
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		surface_view = (SurfaceView) findViewById(R.id.surface);
@@ -179,6 +182,16 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
+			break;
+		}
+		return true;
 	}
 
 }
