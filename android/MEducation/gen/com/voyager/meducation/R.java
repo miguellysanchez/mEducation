@@ -25,10 +25,11 @@ public final class R {
     }
     public static final class color {
         public static final int bg_theme=0x7f050000;
-        public static final int btn_color=0x7f050003;
-        public static final int gray=0x7f050002;
-        public static final int list_divider=0x7f050004;
-        public static final int white=0x7f050001;
+        public static final int bg_theme_student=0x7f050001;
+        public static final int btn_color=0x7f050004;
+        public static final int gray=0x7f050003;
+        public static final int list_divider=0x7f050005;
+        public static final int white=0x7f050002;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -50,16 +51,16 @@ public final class R {
         public static final int ic_launcher=0x7f020006;
     }
     public static final class id {
-        public static final int action_camera_test=0x7f0b002a;
-        public static final int action_search=0x7f0b0028;
-        public static final int action_settings=0x7f0b0029;
-        public static final int back=0x7f0b0026;
-        public static final int backLayout=0x7f0b0025;
+        public static final int action_camera_test=0x7f0b002b;
+        public static final int action_search=0x7f0b0029;
+        public static final int action_settings=0x7f0b002a;
+        public static final int back=0x7f0b0027;
+        public static final int backLayout=0x7f0b0026;
         public static final int btnLogin=0x7f0b0004;
-        public static final int btnPhotoCapture=0x7f0b0023;
+        public static final int btnPhotoCapture=0x7f0b0024;
         public static final int btnRegister=0x7f0b000b;
         public static final int datePickerBirthdate=0x7f0b001e;
-        public static final int dropdownStudentList=0x7f0b0021;
+        public static final int dropdownStudentList=0x7f0b0022;
         public static final int editEmail=0x7f0b0018;
         public static final int editFirstName=0x7f0b000e;
         public static final int editLastName=0x7f0b0012;
@@ -72,14 +73,15 @@ public final class R {
         public static final int header=0x7f0b000a;
         public static final int listClassrooms=0x7f0b0000;
         public static final int listDashboardTasks=0x7f0b0001;
-        public static final int listSubjects=0x7f0b001f;
+        public static final int listFiles=0x7f0b001f;
+        public static final int listSubjects=0x7f0b0020;
         public static final int meducationLogo=0x7f0b0008;
-        public static final int photoDashboard=0x7f0b0020;
+        public static final int photoDashboard=0x7f0b0021;
         public static final int radioFemale=0x7f0b0016;
         public static final int radioGender=0x7f0b0014;
         public static final int radioMale=0x7f0b0015;
         public static final int scrollRegistrationFields=0x7f0b000c;
-        public static final int surface=0x7f0b0022;
+        public static final int surface=0x7f0b0023;
         public static final int textBirthdate=0x7f0b001d;
         public static final int textEmail=0x7f0b0017;
         public static final int textFirstName=0x7f0b000d;
@@ -89,10 +91,10 @@ public final class R {
         public static final int textPassword=0x7f0b001b;
         public static final int textProctorRegister=0x7f0b0005;
         public static final int textTeacherRegister=0x7f0b0007;
-        public static final int textTitle=0x7f0b0027;
+        public static final int textTitle=0x7f0b0028;
         public static final int textUsername=0x7f0b0019;
         public static final int textView1=0x7f0b0006;
-        public static final int window_title=0x7f0b0024;
+        public static final int window_title=0x7f0b0025;
     }
     public static final class layout {
         public static final int classrooms_activity=0x7f030000;
@@ -100,10 +102,11 @@ public final class R {
         public static final int login_activity=0x7f030002;
         public static final int main_page_activity=0x7f030003;
         public static final int registration_activity=0x7f030004;
-        public static final int student_classroom_activity=0x7f030005;
-        public static final int subjects_fragment=0x7f030006;
-        public static final int take_exam_photo_activity=0x7f030007;
-        public static final int window_title=0x7f030008;
+        public static final int single_student_fragment=0x7f030005;
+        public static final int student_classroom_activity=0x7f030006;
+        public static final int subjects_fragment=0x7f030007;
+        public static final int take_exam_photo_activity=0x7f030008;
+        public static final int window_title=0x7f030009;
     }
     public static final class menu {
         public static final int action_bar_menu=0x7f0a0000;

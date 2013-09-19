@@ -3,10 +3,12 @@ package com.voyager.meducation.activities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.DropboxFileInfo;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
@@ -16,6 +18,7 @@ import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
 import com.voyager.meducation.fragments.ClassroomsFragment;
 import com.voyager.meducation.fragments.DashboardFragment;
+import com.voyager.meducation.fragments.SingleStudentFragment;
 import com.voyager.meducation.fragments.StudentsFragment;
 import com.voyager.meducation.fragments.SubjectsFragment;
 
@@ -124,6 +127,14 @@ public class MainPageActivity extends Activity implements TabListener{
 
 	}
 	///ACTIONS INVOKED BY STUDENTSFRAGMENT
+	public void goToSingleStudent(String name){
+		SingleStudentFragment mSingleStudentFragment = new SingleStudentFragment(name);
+		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
+		fTrans.setCustomAnimations(R.anim.frag_right_slide_in, R.anim.frag_left_slide_out);
+		fTrans.replace(R.id.fragment_container, mSingleStudentFragment).commit();
+		currentTab = 4;
+	}
+	
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
@@ -238,7 +249,7 @@ public class MainPageActivity extends Activity implements TabListener{
 			int count = 0;
 			Log.d(TAG, ">>>Cu"+count);count++;
 
-			for(File file: getListFiles(getDir())){
+			for(File file: getListFiles(getSourceDir())){
 				Log.d(TAG, ">>>Cu"+count);count++;
 				try {
 					FileInputStream fis = new FileInputStream(file);
@@ -257,6 +268,8 @@ public class MainPageActivity extends Activity implements TabListener{
 		@Override
 		protected void onPostExecute(String result){
 			Toast.makeText(getApplicationContext(), "UPLOAD COMPLETE", Toast.LENGTH_LONG).show();
+			
+			(new DownloadFiles()).execute();
 		}
 		private List<File> getListFiles(File parentDir) {
 		    ArrayList<File> inFiles = new ArrayList<File>();
@@ -271,10 +284,67 @@ public class MainPageActivity extends Activity implements TabListener{
 		    return inFiles;
 		}
 		
-		private File getDir() {
-			File sdDir = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-			return new File(sdDir, "MEducation");
+	}
+	
+	class DownloadFiles extends AsyncTask<String, String, String>{
+		@Override
+		protected void onPreExecute(){
+			Toast.makeText(getApplicationContext(), "Starting Download", Toast.LENGTH_LONG).show();
 		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			try{
+				ArrayList<String> allFileNames = getAllDropboxFileNames();
+
+				for(String singleFileName : allFileNames){
+					File file = new File(getSourceDir()+singleFileName);
+					FileOutputStream fos = new FileOutputStream(file);
+					Log.i(TAG, ">>>>"+getSourceDir()+" | "+singleFileName);
+					DropboxFileInfo info = mDBApi.getFile(singleFileName, null, fos, null);
+				}
+			}
+			catch(FileNotFoundException e){
+				e.printStackTrace();
+			}
+			catch(DropboxException e){
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result){
+			Toast.makeText(getApplicationContext(), "SYNC COMPLETE", Toast.LENGTH_LONG).show();
+		}
+		
+		
+		
+		
+	}
+	
+	public ArrayList<String> getAllDropboxFileNames(){
+		ArrayList<String> fileNames = new ArrayList<String>();
+		Entry entries;
+		try {
+			entries = mDBApi.metadata("/", 100, null, true, null);
+			
+			for (Entry e : entries.contents) {
+			    if (!e.isDeleted && !e.isDir) {
+			        Log.i(TAG,">>>"+e.path);
+			        fileNames.add(e.path);
+			    }
+			}
+		} catch (DropboxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        return fileNames;
+	}
+	
+	public File getSourceDir() {
+		File sdDir = Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		return new File(sdDir, "MEducation");
 	}
 }

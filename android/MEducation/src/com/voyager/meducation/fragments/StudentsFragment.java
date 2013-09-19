@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,12 +36,12 @@ public class StudentsFragment extends Fragment {
 		String[] values=null;
 		if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
 			values = new String[]{
-		        	"Juan dela Cruz", "Michael Bay", "Pedro Santos" , "Kim Atienza", "Miguel Sanchez", "Edgar Parokya" , "Jose Rizal"
+		        	"Juan Luna", "Jose Rizal", "Yoshino Shinobu" , "Miguel Sanchez", "JV Vitug", "Edgar Parokya" , "Johnny Bravo"
 	        };
 		}
 		else if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
 			values = new String[]{
-		        	"Juan dela Cruz", "Michael Bay", "Pedro Santos" , "Kim Atienza", "Miguel Sanchez", "Edgar Parokya" , "Jose Rizal"
+		        	"Juan Luna", "Jose Rizal", "Yoshino Shinobu" , "Miguel Sanchez", "JV Vitug", "Edgar Parokya" , "Johnny Bravo"
 		    };
 		}
         
@@ -58,7 +59,9 @@ public class StudentsFragment extends Fragment {
 					int position, long id) {
 				switch (position) {
 				default:
-					;
+					String targetName = parent.getItemAtPosition(position).toString();
+					Log.i(TAG, ">>>NAME: "+targetName);
+					((MainPageActivity)getActivity()).goToSingleStudent(targetName);
 				break;
 				}
 

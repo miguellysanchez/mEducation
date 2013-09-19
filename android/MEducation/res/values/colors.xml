@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="bg_theme">#FFE8EEDD</color>
+   	<color name="bg_theme_student">#FFD8DDC0</color>
+    
     <color name="white">#FFFFFFFF</color>
 	<color name="gray">#FF444444</color>
 	<color name="btn_color">#DD559967</color>
     <color name="list_divider">#99333344</color>
+    
 </resources>
