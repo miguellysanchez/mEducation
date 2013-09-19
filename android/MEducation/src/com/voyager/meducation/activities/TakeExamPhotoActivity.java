@@ -2,16 +2,22 @@ package com.voyager.meducation.activities;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import com.voyager.meducation.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.hardware.Camera;
+import android.hardware.Camera.PictureCallback;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
@@ -25,219 +31,154 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-public class TakeExamPhotoActivity extends Activity implements OnClickListener {
+public class TakeExamPhotoActivity extends Activity implements OnClickListener, OnItemSelectedListener{
 
-	private SurfaceView preview = null;
-	private SurfaceHolder previewHolder = null;
-	private Camera camera = null;
-	private boolean inPreview = false;
-	ImageView image;
-	Bitmap bmp, itembmp;
-	static Bitmap mutableBitmap;
-	PointF start = new PointF();
-	PointF mid = new PointF();
-	float oldDist = 1f;
-	File imageFileName = null;
-	File imageFileFolder = null;
-	private MediaScannerConnection msConn;
-	Display d;
-	int screenhgt, screenwdh;
-	ProgressDialog dialog;
+	public static final String TAG = TakeExamPhotoActivity.class
+			.getSimpleName();
+
+	private SurfaceView surface_view;
+	private Camera mCamera;
+	SurfaceHolder.Callback sh_ob = null;
+	SurfaceHolder surface_holder = null;
+	SurfaceHolder.Callback sh_callback = null;
+	static String studentName = null;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.take_exam_photo_activity);
 
-		preview = (SurfaceView) findViewById(R.id.surface);
-
-		previewHolder = preview.getHolder();
-		previewHolder.addCallback(surfaceCallback);
-		previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-		previewHolder.setFixedSize(getWindow().getWindowManager()
-				.getDefaultDisplay().getWidth(), getWindow().getWindowManager()
-				.getDefaultDisplay().getHeight());
-
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		camera = Camera.open();
-	}
-
-	@Override
-	public void onPause() {
-		if (inPreview) {
-			camera.stopPreview();
+		// Camera settings
+		getWindow().setFormat(PixelFormat.TRANSLUCENT);
+		surface_view = (SurfaceView) findViewById(R.id.surface);
+		if (surface_holder == null) {
+			surface_holder = surface_view.getHolder();
 		}
+		sh_callback = my_callback();
+		surface_holder.addCallback(sh_callback);
 
-		camera.release();
-		camera = null;
-		inPreview = false;
-		super.onPause();
+		findViewById(R.id.btnPhotoCapture).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Log.d(TAG, ">>>SHUTTER");
+						final PhotoHandler photoHandler = new PhotoHandler(
+								TakeExamPhotoActivity.this);
+						mCamera.takePicture(null, null, photoHandler);
+
+					}
+				});
+		
+		((Spinner)findViewById(R.id.dropdownStudentList)).setOnItemSelectedListener(this);
+
 	}
 
-	private Camera.Size getBestPreviewSize(int width, int height,
-			Camera.Parameters parameters) {
-		Camera.Size result = null;
-		for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
-			if (size.width <= width && size.height <= height) {
-				if (result == null) {
-					result = size;
-				} else {
-					int resultArea = result.width * result.height;
-					int newArea = size.width * size.height;
-					if (newArea > resultArea) {
-						result = size;
-					}
+	SurfaceHolder.Callback my_callback() {
+		SurfaceHolder.Callback ob1 = new SurfaceHolder.Callback() {
+
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				mCamera.stopPreview();
+				mCamera.release();
+				mCamera = null;
+			}
+
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				mCamera = Camera.open();
+				mCamera.setDisplayOrientation(90);
+
+				try {
+					mCamera.setPreviewDisplay(holder);
+				} catch (IOException exception) {
+					mCamera.release();
+					mCamera = null;
 				}
 			}
-		}
-		return (result);
+
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+				mCamera.startPreview();
+			}
+		};
+		return ob1;
 	}
 
-	SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
-		public void surfaceCreated(SurfaceHolder holder) {
+	static class PhotoHandler implements Camera.PictureCallback {
+
+		private final Context context;
+
+		public PhotoHandler(Context context) {
+			this.context = context;
+		}
+
+		@Override
+		public void onPictureTaken(byte[] data, Camera camera) {
+
+			File pictureFileDir = getDir();
+
+			if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {
+
+				Toast.makeText(context,
+						"Can't create directory to save image.",
+						Toast.LENGTH_LONG).show();
+				return;
+
+			}
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
+			String date = dateFormat.format(new Date());
+			String photoFile = studentName + "_testpaper_" + date + ".jpg";
+
+			String filename = pictureFileDir.getPath() + File.separator
+					+ photoFile;
+
+			File pictureFile = new File(filename);
+
 			try {
-				camera.setPreviewDisplay(previewHolder);
-			} catch (Throwable t) {
-				Log.e("PreviewDemo-surfaceCallback",
-						"Exception in setPreviewDisplay()", t);
-				Toast.makeText(TakeExamPhotoActivity.this, t.getMessage(),
+				FileOutputStream fos = new FileOutputStream(pictureFile);
+				fos.write(data);
+				fos.close();
+				Toast.makeText(context, "New Image saved:" + photoFile,
+						Toast.LENGTH_LONG).show();
+			} catch (Exception error) {
+				Toast.makeText(context, "Image could not be saved.",
 						Toast.LENGTH_LONG).show();
 			}
 		}
 
-		public void surfaceChanged(SurfaceHolder holder, int format, int width,
-				int height) {
-			Camera.Parameters parameters = camera.getParameters();
-			Camera.Size size = getBestPreviewSize(width, height, parameters);
-
-			if (size != null) {
-				parameters.setPreviewSize(size.width, size.height);
-				camera.setParameters(parameters);
-				camera.startPreview();
-				inPreview = true;
-			}
+		private File getDir() {
+			File sdDir = Environment
+					.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+			return new File(sdDir, "MEducation");
 		}
-
-		public void surfaceDestroyed(SurfaceHolder holder) {
-			// no-op
-		}
-	};
-
-	Camera.PictureCallback photoCallback = new Camera.PictureCallback() {
-		public void onPictureTaken(final byte[] data, final Camera camera) {
-			dialog = ProgressDialog.show(TakeExamPhotoActivity.this, "", "Saving Photo");
-			new Thread() {
-				public void run() {
-					try {
-						Thread.sleep(1000);
-					} catch (Exception ex) {
-					}
-					onPictureTake(data, camera);
-				}
-			}.start();
-		}
-	};
-
-	public void onPictureTake(byte[] data, Camera camera) {
-
-		bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-		mutableBitmap = bmp.copy(Bitmap.Config.ARGB_8888, true);
-		savePhoto(mutableBitmap);
-		dialog.dismiss();
-	}
-
-	class SavePhotoTask extends AsyncTask<byte[], String, String> {
-		@Override
-		protected String doInBackground(byte[]... jpeg) {
-			File photo = new File(Environment.getExternalStorageDirectory(),
-					"photo.jpg");
-			if (photo.exists()) {
-				photo.delete();
-			}
-			try {
-				FileOutputStream fos = new FileOutputStream(photo.getPath());
-				fos.write(jpeg[0]);
-				fos.close();
-			} catch (java.io.IOException e) {
-				Log.e("PictureDemo", "Exception in photoCallback", e);
-			}
-			return (null);
-		}
-	}
-
-	public void savePhoto(Bitmap bmp) {
-		imageFileFolder = new File(Environment.getExternalStorageDirectory(),
-				"Rotate");
-		imageFileFolder.mkdir();
-		FileOutputStream out = null;
-		Calendar c = Calendar.getInstance();
-		String date = fromInt(c.get(Calendar.MONTH))
-				+ fromInt(c.get(Calendar.DAY_OF_MONTH))
-				+ fromInt(c.get(Calendar.YEAR))
-				+ fromInt(c.get(Calendar.HOUR_OF_DAY))
-				+ fromInt(c.get(Calendar.MINUTE))
-				+ fromInt(c.get(Calendar.SECOND));
-		imageFileName = new File(imageFileFolder, date.toString() + ".jpg");
-		try {
-			out = new FileOutputStream(imageFileName);
-			bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			scanPhoto(imageFileName.toString());
-			out = null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public String fromInt(int val) {
-		return String.valueOf(val);
-	}
-
-	public void scanPhoto(final String imageFileName) {
-		msConn = new MediaScannerConnection(TakeExamPhotoActivity.this,
-				new MediaScannerConnectionClient() {
-					public void onMediaScannerConnected() {
-						msConn.scanFile(imageFileName, null);
-						Log.i("msClient obj  in Photo Utility",
-								"connection established");
-					}
-
-					public void onScanCompleted(String path, Uri uri) {
-						msConn.disconnect();
-						Log.i("msClient obj in Photo Utility", "scan completed");
-					}
-
-					
-				});
-		msConn.connect();
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0) {
-			onBack();
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
-	public void onBack() {
-		Log.e("onBack :", "yes");
-		camera.takePicture(null, null, photoCallback);
-		inPreview = false;
 	}
 
 	@Override
 	public void onClick(View v) {
+		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,
+			long id) {
+		studentName = parent.getItemAtPosition(pos).toString();
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

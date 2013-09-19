@@ -50,12 +50,13 @@ public final class R {
         public static final int ic_launcher=0x7f020006;
     }
     public static final class id {
-        public static final int action_camera_test=0x7f0b0028;
-        public static final int action_search=0x7f0b0026;
-        public static final int action_settings=0x7f0b0027;
-        public static final int back=0x7f0b0024;
-        public static final int backLayout=0x7f0b0023;
+        public static final int action_camera_test=0x7f0b002a;
+        public static final int action_search=0x7f0b0028;
+        public static final int action_settings=0x7f0b0029;
+        public static final int back=0x7f0b0026;
+        public static final int backLayout=0x7f0b0025;
         public static final int btnLogin=0x7f0b0004;
+        public static final int btnPhotoCapture=0x7f0b0023;
         public static final int btnRegister=0x7f0b000b;
         public static final int datePickerBirthdate=0x7f0b001e;
         public static final int dropdownStudentList=0x7f0b0021;
@@ -73,11 +74,12 @@ public final class R {
         public static final int listDashboardTasks=0x7f0b0001;
         public static final int listSubjects=0x7f0b001f;
         public static final int meducationLogo=0x7f0b0008;
+        public static final int photoDashboard=0x7f0b0020;
         public static final int radioFemale=0x7f0b0016;
         public static final int radioGender=0x7f0b0014;
         public static final int radioMale=0x7f0b0015;
         public static final int scrollRegistrationFields=0x7f0b000c;
-        public static final int surface=0x7f0b0020;
+        public static final int surface=0x7f0b0022;
         public static final int textBirthdate=0x7f0b001d;
         public static final int textEmail=0x7f0b0017;
         public static final int textFirstName=0x7f0b000d;
@@ -87,10 +89,10 @@ public final class R {
         public static final int textPassword=0x7f0b001b;
         public static final int textProctorRegister=0x7f0b0005;
         public static final int textTeacherRegister=0x7f0b0007;
-        public static final int textTitle=0x7f0b0025;
+        public static final int textTitle=0x7f0b0027;
         public static final int textUsername=0x7f0b0019;
         public static final int textView1=0x7f0b0006;
-        public static final int window_title=0x7f0b0022;
+        public static final int window_title=0x7f0b0024;
     }
     public static final class layout {
         public static final int classrooms_activity=0x7f030000;

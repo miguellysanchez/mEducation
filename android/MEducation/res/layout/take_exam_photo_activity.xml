@@ -1,21 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <android.view.SurfaceView
-        android:id="@+id/surface"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-
-    <Spinner
-        android:id="@+id/dropdownStudentList"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/photoDashboard"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
-        android:entries="@array/student_names" 
-        android:background="@color/white"/>
+        android:background="@color/bg_theme"
+        android:padding="5dp" 
+        android:layout_weight="0.9">
 
-</RelativeLayout>
+        <Spinner
+            android:id="@+id/dropdownStudentList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:entries="@array/student_names" />
+
+        
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.1" >
+
+        <android.view.SurfaceView
+            android:id="@+id/surface"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <ImageButton
+            android:id="@+id/btnPhotoCapture"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_camera_test" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -3,11 +3,14 @@ package com.voyager.meducation.activities;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.Session;
 import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
@@ -23,8 +26,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,19 +46,15 @@ public class MainPageActivity extends Activity implements TabListener{
 	SubjectsFragment mSubjectsFragment;
 	ClassroomsFragment mClassroomsFragment;
 	StudentsFragment mStudentsFragment;
-	DropboxAPI<AndroidAuthSession> dbApi;
 	int currentTab = 0;
+	DropboxAPI<AndroidAuthSession> mDBApi;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
-		dbApi = ((MEducationApplication)getApplication()).getDropboxApi();
-		
-		if(dbApi==null){
-			Log.d(TAG, ">>>FUUUU");
-		}
+		mDBApi = ((MEducationApplication)getApplication()).getDBApi();
 		
 		actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -91,7 +92,7 @@ public class MainPageActivity extends Activity implements TabListener{
 		Log.d(TAG, ">>>TO SUBJ");
 		
 		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
-		fTrans.setCustomAnimations(R.anim.frag_left_slide_in, R.anim.frag_right_slide_out);
+		fTrans.setCustomAnimations(R.anim.frag_right_slide_in, R.anim.frag_left_slide_out);
 		fTrans.replace(R.id.fragment_container, mSubjectsFragment)
 				.commit();
 		currentTab = 1;
@@ -103,7 +104,7 @@ public class MainPageActivity extends Activity implements TabListener{
 		Log.d(TAG, ">>>TO CLASSROOM");
 		
 		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
-		fTrans.setCustomAnimations(R.anim.frag_left_slide_in, R.anim.frag_right_slide_out);
+		fTrans.setCustomAnimations(R.anim.frag_right_slide_in, R.anim.frag_left_slide_out);
 		fTrans.replace(R.id.fragment_container, mClassroomsFragment)
 				.commit();
 		currentTab = 2;
@@ -115,7 +116,7 @@ public class MainPageActivity extends Activity implements TabListener{
 	public void goToStudents(){
 		Log.d(TAG, ">>>TO STUD");
 		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
-		fTrans.setCustomAnimations(R.anim.frag_left_slide_in, R.anim.frag_right_slide_out);
+		fTrans.setCustomAnimations(R.anim.frag_right_slide_in, R.anim.frag_left_slide_out);
 		fTrans.replace(R.id.fragment_container, mStudentsFragment)
 				.commit();
 		currentTab = 3;
@@ -123,7 +124,6 @@ public class MainPageActivity extends Activity implements TabListener{
 
 	}
 	///ACTIONS INVOKED BY STUDENTSFRAGMENT
-	
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
@@ -190,23 +190,7 @@ public class MainPageActivity extends Activity implements TabListener{
 			onBackPressed();
 			break;
 		case R.id.action_search:
-			Toast.makeText(getApplicationContext(), "TRYING TO UPLOAD", Toast.LENGTH_LONG).show();
-			File file = new File("working-draft.txt");
-			FileInputStream inputStream;
-			try {
-				inputStream = new FileInputStream(file);
-				try {
-					Entry response = dbApi.putFile("/magnum-opus.txt", inputStream,file.length(), null, null);
-				} catch (DropboxException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			 
+			(new UploadFiles()).execute();
 			break;
 		case R.id.action_camera_test:
 			Intent examPhotoIntent = new Intent(MainPageActivity.this,
@@ -220,5 +204,77 @@ public class MainPageActivity extends Activity implements TabListener{
 
 		return true;
 	}
+	
 
+	@Override
+	public void onBackPressed(){
+	}
+	
+	protected void onResume() {
+	    super.onResume();
+
+	    if (mDBApi.getSession().authenticationSuccessful()) {
+	        try {
+	            // Required to complete auth, sets the access token on the session
+	            mDBApi.getSession().finishAuthentication();
+
+	            AccessTokenPair tokens = mDBApi.getSession().getAccessTokenPair();
+	            ((MEducationApplication)getApplication()).setKeys(tokens.key, tokens.secret);
+
+	        } catch (IllegalStateException e) {
+	            Log.i("DbAuthLog", "Error authenticating", e);
+	        }
+	    }
+	}
+	
+	class UploadFiles extends AsyncTask<String, String, String>{
+		@Override
+		protected void onPreExecute(){
+			Toast.makeText(getApplicationContext(), "Starting Upload", Toast.LENGTH_LONG).show();
+		}
+		
+		@Override
+		protected String doInBackground(String... params) {
+			int count = 0;
+			Log.d(TAG, ">>>Cu"+count);count++;
+
+			for(File file: getListFiles(getDir())){
+				Log.d(TAG, ">>>Cu"+count);count++;
+				try {
+					FileInputStream fis = new FileInputStream(file);
+					Entry response = mDBApi.putFileOverwrite(File.separator+file.getName(), fis,
+					        file.length(),null);
+				} catch (DropboxException e) {
+					Log.e(TAG, ">>>DropboxError");
+					e.printStackTrace();
+				} catch (FileNotFoundException e){
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result){
+			Toast.makeText(getApplicationContext(), "UPLOAD COMPLETE", Toast.LENGTH_LONG).show();
+		}
+		private List<File> getListFiles(File parentDir) {
+		    ArrayList<File> inFiles = new ArrayList<File>();
+		    File[] files = parentDir.listFiles();
+		    for (File file : files) {
+		        if (file.isDirectory()) {
+		            inFiles.addAll(getListFiles(file));
+		        } else {
+		                inFiles.add(file);
+		        }
+		    }
+		    return inFiles;
+		}
+		
+		private File getDir() {
+			File sdDir = Environment
+					.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+			return new File(sdDir, "MEducation");
+		}
+	}
 }

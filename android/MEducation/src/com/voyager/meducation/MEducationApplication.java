@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
 import com.voyager.meducation.activities.LoginActivity;
@@ -23,18 +24,19 @@ public class MEducationApplication extends Application {
 	//DROPBOX STUFF
 	final static public String APP_KEY = "n706k8ax7vymwzp";
 	final static public String APP_SECRET = "czjpvb5x6zclr9r";
-	final static public AccessType ACCESS_TYPE = AccessType.DROPBOX;
+	final static public AccessType ACCESS_TYPE = AccessType.APP_FOLDER;
 
 	private DropboxAPI<AndroidAuthSession> dropboxApi;
 
 	private static final String IS_LOGGED_IN = "is_logged_in";
+	private static final String IS_DROPBOX_LINKED = "is_dropbox_linked";
 	SharedPreferences prefs;
 	
 	public void onCreate(){
 		super.onCreate();
 		prefs = getSharedPreferences(MEducationApplication.class.getSimpleName(),MODE_PRIVATE);
 	}
-
+	
 	public boolean isLoggedIn(){
 		return prefs.getBoolean(IS_LOGGED_IN,false);
 	}
@@ -70,13 +72,27 @@ public class MEducationApplication extends Application {
         prefs.edit().putString(ACCESS_SECRET_NAME, secret);
 	}
 	
-	public DropboxAPI<AndroidAuthSession> getDropboxApi(){
-		return dropboxApi;
-	}
+	public AndroidAuthSession getAndroidAuthSession() {
+        AppKeyPair appKeyPair = new AppKeyPair(APP_KEY, APP_SECRET);
+        AndroidAuthSession session;
+
+        String[] stored = getKeys();
+        if (stored != null) {
+            AccessTokenPair accessToken = new AccessTokenPair(stored[0], stored[1]);
+            session = new AndroidAuthSession(appKeyPair, ACCESS_TYPE, accessToken);
+        } else {
+            session = new AndroidAuthSession(appKeyPair, ACCESS_TYPE);
+        }
+        return session;
+        
+    }
 	
-	public void setDropboxApi(DropboxAPI<AndroidAuthSession> dbapi){
-		dropboxApi = dbapi;
+	public DropboxAPI<AndroidAuthSession> getDBApi(){
+		return (new DropboxAPI<AndroidAuthSession>(getAndroidAuthSession()));
 	}
+	///
+	
+	
 	
 	public SharedPreferences getPrefs(){
 		if (prefs == null)
