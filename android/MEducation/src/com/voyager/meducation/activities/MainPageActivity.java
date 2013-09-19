@@ -82,8 +82,9 @@ public class MainPageActivity extends Activity implements TabListener{
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText("STUDENTS")
 				.setTabListener(this));
+		actionBar.addTab(actionBar.newTab().setText("NAME").setTabListener(this));
 	}
-	
+
 	///ACTIONS INVOKED BY DASHBOARDFRAGMENT
 	public void logout(){
 		startActivity(new Intent(MainPageActivity.this, LoginActivity.class));
@@ -133,6 +134,8 @@ public class MainPageActivity extends Activity implements TabListener{
 		fTrans.setCustomAnimations(R.anim.frag_right_slide_in, R.anim.frag_left_slide_out);
 		fTrans.replace(R.id.fragment_container, mSingleStudentFragment).commit();
 		currentTab = 4;
+		getActionBar().setSelectedNavigationItem(currentTab);
+		getActionBar().getSelectedTab().setText(name);
 	}
 	
 	@Override
@@ -156,7 +159,6 @@ public class MainPageActivity extends Activity implements TabListener{
 					.commit();
 			currentTab = 0;
 			getActionBar().setSelectedNavigationItem(currentTab);
-
 		} 
 		else if (tab.getPosition() == 1) {
 			FragmentTransaction fTrans = getFragmentManager().beginTransaction();
@@ -171,6 +173,7 @@ public class MainPageActivity extends Activity implements TabListener{
 			fTrans.replace(R.id.fragment_container, mClassroomsFragment)
 					.commit();
 			currentTab = 2;
+
 		} 
 		else if (tab.getPosition() == 3) {
 			FragmentTransaction fTrans = getFragmentManager().beginTransaction();
@@ -178,7 +181,12 @@ public class MainPageActivity extends Activity implements TabListener{
 			fTrans.replace(R.id.fragment_container, mStudentsFragment)
 					.commit();
 			currentTab = 3;
-		} 
+
+		} 	
+		
+		if(getActionBar().getTabCount()>4 && currentTab!=4){
+			getActionBar().getTabAt(4).setText("NAME");
+		}
 	}
 
 	@Override
