@@ -283,7 +283,7 @@ public class MainPageActivity extends Activity implements TabListener{
 		    ArrayList<File> inFiles = new ArrayList<File>();
 		    File[] files = parentDir.listFiles();
 		    for (File file : files) {
-		        if (file.isDirectory()) {
+		        if (file!=null&&file.isDirectory()) {
 		            inFiles.addAll(getListFiles(file));
 		        } else {
 		                inFiles.add(file);
@@ -352,7 +352,7 @@ public class MainPageActivity extends Activity implements TabListener{
 	
 	public File getSourceDir() {
 		File sdDir = Environment
-				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+				.getExternalStorageDirectory();
 		return new File(sdDir, "MEducation");
 	}
 }

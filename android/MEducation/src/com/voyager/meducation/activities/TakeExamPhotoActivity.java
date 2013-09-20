@@ -161,7 +161,8 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 
 		private File getDir() {
 			File sdDir = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+					.getExternalStorageDirectory();
+			Log.i(TAG, ">>>DIRECTORY: "+sdDir.getPath());
 			return new File(sdDir, "MEducation");
 		}
 	}

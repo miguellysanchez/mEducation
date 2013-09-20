@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,22 +19,53 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/MEducationTheme" >
-        
-        <!--=================DROPBOX LOGIN ACTIVITY=================-->
+
+        <!-- =================AVIARY FEATHER ACTIVITY=================== -->
+        <meta-data
+            android:name="com.aviary.android.feather.v1.API_KEY"
+            android:value="c2j41834j7ua1748" />
+
+        <activity
+            android:name="com.aviary.android.feather.FeatherActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
+            android:largeHeap="true"
+            android:screenOrientation="unspecified"
+            android:theme="@style/AviaryTheme" />
+
+        <receiver
+            android:name="com.aviary.android.feather.library.receivers.AviarySystemReceiver"
+            android:exported="true"
+            android:process=":aviary_standalone_system_receiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <!-- ==============END AVIARY FEATHER ACTIVITY================== -->
+
+
+        <!-- =================DROPBOX LOGIN ACTIVITY================= -->
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask" >
             <intent-filter>
+
                 <!-- Change this to be db- followed by your app key -->
                 <data android:scheme="db-n706k8ax7vymwzp" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!--==============END DROPBOX LOGIN ACTIVITY===================-->
-        
+        <!-- ==============END DROPBOX LOGIN ACTIVITY=================== -->
+
         <activity
             android:name="com.voyager.meducation.activities.LoginActivity"
             android:label="@string/app_name"

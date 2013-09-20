@@ -5,8 +5,10 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aviary.android.feather.FeatherActivity;
 import com.voyager.meducation.R;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -59,8 +62,10 @@ public class SingleStudentFragment extends Fragment {
 		ListView listStudentFiles = (ListView)thisView.findViewById(R.id.listFiles);
 		ArrayList<String> selectedFileNames = new ArrayList<String>();
 		
-		for(File f: allSelectedFiles){
-			selectedFileNames.add(f.getName());
+		for(File file: allSelectedFiles){ 
+			if(file!=null){
+				selectedFileNames.add(file.getName());
+			}
 		}
 		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, selectedFileNames);
 		listStudentFiles.setAdapter(adapter);
@@ -92,14 +97,38 @@ public class SingleStudentFragment extends Fragment {
 				}
 			}
 		});
+
+		listStudentFiles.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+				File targetFile = new File(getSourceDir().getPath()+File.separator+parent.getItemAtPosition(position).toString());
+				Uri targetFileUri = Uri.fromFile(targetFile);
+				String fileExtension = MimeTypeMap
+						.getFileExtensionFromUrl(targetFileUri.toString());
+				String mimeType = MimeTypeMap.getSingleton()
+						.getMimeTypeFromExtension(fileExtension);
+				Log.i(TAG, ">>>ooPath: "+targetFileUri.getPath()+" | " + mimeType);
+				
+				if(mimeType.split("/")[0].equals("image")){
+					Intent newIntent = new Intent( getActivity(), FeatherActivity.class );
+					newIntent.setData( targetFileUri );
+					startActivityForResult( newIntent, 1 ); 
+				}
+				return false;
+			}
+		
+		});
 		
 		return thisView;
 	}
 	
 	private File getSourceDir() {
 		File sdDir = Environment
-				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+				.getExternalStorageDirectory();
 		return new File(sdDir, "MEducation");
 	}
+	
+ 
 	
 }
