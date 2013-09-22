@@ -32,7 +32,7 @@ public class ClassroomsFragment extends Fragment {
 	
 	ActionBar actionBar;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View thisView = inflater.inflate(R.layout.dashboard_fragment, container, false);
+		View thisView = inflater.inflate(R.layout.classrooms_fragment, container, false);
 		String[] values=null;
 		if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
 			values = new String[]{
@@ -50,16 +50,16 @@ public class ClassroomsFragment extends Fragment {
         	list.add(values[i]);
         }
 		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
-		ListView listDashboardTasks =(ListView) thisView.findViewById(R.id.listDashboardTasks);
-		listDashboardTasks.setAdapter(adapter);
-		listDashboardTasks.setOnItemClickListener(new OnItemClickListener() {
+		ListView listClassrooms =(ListView) thisView.findViewById(R.id.listClassrooms);
+		listClassrooms.setAdapter(adapter);
+		listClassrooms.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
 					int position, long id) {
 				switch (position) {
 				default:
-					((MainPageActivity)getActivity()).goToStudents();
+					((MainPageActivity)getActivity()).goToStudentClassroom();
 					
 				break;
 				}

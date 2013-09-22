@@ -5,13 +5,13 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:icon="@drawable/ic_action_search"
-        android:title="Search">
+        android:title="Sync files online">
     </item>
     <item
         android:id="@+id/action_camera_test"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:icon="@drawable/ic_camera_test"
-        android:title="Settings">
+        android:title="Exam/Test scanner">
         </item>
 </menu> 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.android.AuthActivity;
+import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
@@ -41,105 +42,109 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		//Build the android auth session, then use that to get the dropboxApi
-		mDBApi = ((MEducationApplication)getApplication()).getDBApi();
-		
-		//If application is not yet linked to Dropbox then try to login
-		if(!mDBApi.getSession().isLinked()){
+		Log.d(TAG, ">>>ONCREATE");
+
+		// Build the android auth session, then use that to get the dropboxApi
+		mDBApi = ((MEducationApplication) getApplication()).getDBApi();
+
+		// If application is not yet linked to Dropbox then try to login
+		if (!mDBApi.getSession().authenticationSuccessful()) {
+			Log.d(TAG, ">>>STARTING AUTHENTICATION");
+
 			mDBApi.getSession().startAuthentication(LoginActivity.this);
 		}
-		
+
 		setContentView(R.layout.login_activity);
-	    if (((MEducationApplication) getApplication()).isLoggedIn()) {
+		if (((MEducationApplication) getApplication()).isLoggedIn()) {
 			Intent dashboardIntent = new Intent(LoginActivity.this,
 					MainPageActivity.class);
-			LoginActivity.this.finish();
-
 			startActivity(dashboardIntent);
-		} 
-		else {
+		}
+		findViewById(R.id.btnLogin).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+//				if (mDBApi.getSession().authenticationSuccessful()) {
+					Intent dashboardIntent = new Intent(LoginActivity.this,
+							MainPageActivity.class);
+					((MEducationApplication) getApplication())
+							.setIsLoggedIn(true);
+					// if (System.currentTimeMillis() % 2 == 0) {
+					((MEducationApplication) getApplication())
+							.setAccountType(MEducationApplication.TEACHER);
+					// } else {
+					// ((MEducationApplication) getApplication())
+					// .setAccountType(MEducationApplication.PROCTOR);
+					// }
 
-			setContentView(R.layout.login_activity);
-
-			findViewById(R.id.btnLogin).setOnClickListener(
-					new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent dashboardIntent = new Intent(
-									LoginActivity.this, MainPageActivity.class);
-							LoginActivity.this.finish();
-							((MEducationApplication) getApplication())
-									.setIsLoggedIn(true);
-							// if (System.currentTimeMillis() % 2 == 0) {
-							((MEducationApplication) getApplication())
-									.setAccountType(MEducationApplication.TEACHER);
-							// } else {
-							// ((MEducationApplication) getApplication())
-							// .setAccountType(MEducationApplication.PROCTOR);
-							// }
-
-							startActivity(dashboardIntent);
-							overridePendingTransition(R.anim.right_slide_in,
-									R.anim.left_slide_out);
-						}
-					});
-
-			findViewById(R.id.textTeacherRegister).setOnClickListener(
-					new OnClickListener() {
-						public void onClick(View v) {
-							Log.d(TAG, ">>>Teacher Registration");
-							Intent registrationIntent = new Intent(
-									LoginActivity.this,
-									RegistrationActivity.class);
-							registrationIntent.putExtra(
-									MEducationApplication.ACCOUNT_TYPE,
-									MEducationApplication.TEACHER);
-							startActivity(registrationIntent);
-							overridePendingTransition(R.anim.right_slide_in,
-									R.anim.left_slide_out);
-						}
-					});
-
-			findViewById(R.id.textProctorRegister).setOnClickListener(
-			new OnClickListener() {
-				public void onClick(View v) {
-					Log.d(TAG, ">>>Proctor Registration");
-					Intent registrationIntent = new Intent(
-							LoginActivity.this,
-							RegistrationActivity.class);
-					registrationIntent.putExtra(
-							MEducationApplication.ACCOUNT_TYPE,
-							MEducationApplication.PROCTOR);
-					startActivity(registrationIntent);
+					startActivity(dashboardIntent);
 					overridePendingTransition(R.anim.right_slide_in,
 							R.anim.left_slide_out);
-				}
-			});
-		}
+//				}
+//				else{
+//					Toast.makeText(LoginActivity.this, "Cannot login without link to Dropbox", Toast.LENGTH_SHORT).show();
+//					mDBApi.getSession().startAuthentication(LoginActivity.this);
+//				}
+			}
+		});
 
+		findViewById(R.id.textTeacherRegister).setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						Log.d(TAG, ">>>Teacher Registration");
+						Intent registrationIntent = new Intent(
+								LoginActivity.this, RegistrationActivity.class);
+						registrationIntent.putExtra(
+								MEducationApplication.ACCOUNT_TYPE,
+								MEducationApplication.TEACHER);
+						startActivity(registrationIntent);
+						overridePendingTransition(R.anim.right_slide_in,
+								R.anim.left_slide_out);
+					}
+				});
+
+		findViewById(R.id.textProctorRegister).setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						Log.d(TAG, ">>>Proctor Registration");
+						Intent registrationIntent = new Intent(
+								LoginActivity.this, RegistrationActivity.class);
+						registrationIntent.putExtra(
+								MEducationApplication.ACCOUNT_TYPE,
+								MEducationApplication.PROCTOR);
+						startActivity(registrationIntent);
+						overridePendingTransition(R.anim.right_slide_in,
+								R.anim.left_slide_out);
+					}
+				});
 	}
-	
+
 	@Override
 	protected void onResume() {
-	    super.onResume();
-	    if (mDBApi.getSession().authenticationSuccessful()) {
-	        try {
-	            // Required to complete auth, sets the access token on the session
-	            mDBApi.getSession().finishAuthentication();
-	            AccessTokenPair tokens = mDBApi.getSession().getAccessTokenPair();
-	            ((MEducationApplication)getApplication()).setKeys(tokens.key, tokens.secret);
-	            } catch (IllegalStateException e) {
-	            Log.i("DbAuthLog", "Error authenticating", e);
-	        }
-	    }
+		Log.d(TAG, ">>>ONRESUME");
+		super.onResume();
+		if (mDBApi.getSession().authenticationSuccessful()) {
+
+			try {
+				// Required to complete auth, sets the access token on the
+				// session
+				mDBApi.getSession().finishAuthentication();
+				AccessTokenPair tokens = mDBApi.getSession()
+						.getAccessTokenPair();
+				Log.d(TAG, ">>>TOKEN: key: " + tokens.key + " | secret: "
+						+ tokens.secret);
+				((MEducationApplication) getApplication()).setKeys(tokens.key,
+						tokens.secret);
+			} catch (IllegalStateException e) {
+				Log.i("DbAuthLog", "Error authenticating", e);
+			}
+		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 }

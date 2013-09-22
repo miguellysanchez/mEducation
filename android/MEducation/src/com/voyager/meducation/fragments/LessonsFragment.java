@@ -1,0 +1,99 @@
+package com.voyager.meducation.fragments;
+
+import java.util.ArrayList;
+
+import com.voyager.meducation.MEducationApplication;
+import com.voyager.meducation.R;
+import com.voyager.meducation.activities.MainPageActivity;
+
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class LessonsFragment extends Fragment {
+
+	String[] values;
+	String subject;
+	public LessonsFragment(String subj) {
+		subject = subj;
+	}
+	
+	
+	public static final String TAG = LessonsFragment.class.getSimpleName();
+	
+	ActionBar actionBar;
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View thisView = inflater.inflate(R.layout.dashboard_fragment, container, false);
+
+		if (subject.equals("Science")) {
+			values = new String[] {
+					"Human Body", "Astronomy", "Measurement", "Scientific Method"
+			};
+		} else if (subject.equals("Mathematics")) {
+			values = new String[] {
+					"Addition", "Division", "Estimation", "Multiplication", "Rounding off numbers"
+			};
+		} else if (subject.equals("English")) {
+			values = new String[] {
+					"Subject-Verb Agreement", "Verb Tenses", "Spelling"
+			};
+		} else if (subject.equals("Filipino")) {
+			values = new String[] {
+					"Tanaga", "Pandiwa", "Pangungusap"
+			};
+		} else if (subject.equals("Art")) {
+			values = new String[] {
+					"Complementary Colors", "Perspective", "Painting"
+			};
+		} else if (subject.equals("Music")) {
+			values = new String[] {
+					"Tone", "Pitch", "Chords"
+			};
+		} else if (subject.equals("Computer")) {
+			values = new String[] {
+					"Visual Basic", "Excel", "Word", "Using internet browsers", "Parts of a computer"
+			};
+		}
+		
+        ArrayList<String> list = new ArrayList<String>();
+        for(int i=0;i<values.length;i++){
+        	list.add(values[i]);
+        }
+		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
+		ListView listDashboardTasks =(ListView) thisView.findViewById(R.id.listDashboardTasks);
+		listDashboardTasks.setAdapter(adapter);
+		listDashboardTasks.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, final View view,
+					int position, long id) {
+				switch (position) {
+				default:
+					((MainPageActivity)getActivity()).goToClassrooms();
+					
+				break;
+				}
+
+			}
+
+		});
+		// Inflate the layout for this fragment
+        return thisView;
+    }
+	
+}

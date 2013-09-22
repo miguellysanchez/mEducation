@@ -28,7 +28,7 @@ public class SubjectsFragment extends Fragment {
 		View thisView = inflater.inflate(R.layout.subjects_fragment, container, false);
 		
 		String[] values = new String[]{
-	        	"Science","Mathematics", "English", "Filipino", "Art", "Music", "Computer", "Social Sciences"
+	        	"Science","Mathematics", "English", "Filipino", "Art", "Music", "Computer"
 	        };
 		
         
@@ -37,16 +37,16 @@ public class SubjectsFragment extends Fragment {
         	list.add(values[i]);
         }
 		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
-		ListView listDashboardTasks =(ListView) thisView.findViewById(R.id.listSubjects);
-		listDashboardTasks.setAdapter(adapter);
-		listDashboardTasks.setOnItemClickListener(new OnItemClickListener() {
+		ListView listSubjects =(ListView) thisView.findViewById(R.id.listSubjects);
+		listSubjects.setAdapter(adapter);
+		listSubjects.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
 					int position, long id) {
 				switch (position) {
 				default:
-					((MainPageActivity)getActivity()).goToClassrooms();
+					((MainPageActivity)getActivity()).goToLessons(parent.getItemAtPosition(position).toString());
 					break;
 				}
 

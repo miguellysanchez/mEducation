@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aviary.android.feather.FeatherActivity;
+import com.aviary.android.feather.library.Constants;
 import com.voyager.meducation.R;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,12 +27,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.ContentResolver;
+import android.graphics.Bitmap;
 import android.webkit.MimeTypeMap;
 
 public class SingleStudentFragment extends Fragment {
 	
 	public static final String TAG = SingleStudentFragment.class.getSimpleName();
 	private View thisView;
+	private static final int MAX_IMAGE_SIZE = 1024*1024*200; //200 KB
 	
 	String studentName=null;
 	ArrayList<File> selectedFiles;
@@ -62,9 +66,11 @@ public class SingleStudentFragment extends Fragment {
 		ListView listStudentFiles = (ListView)thisView.findViewById(R.id.listFiles);
 		ArrayList<String> selectedFileNames = new ArrayList<String>();
 		
-		for(File file: allSelectedFiles){ 
-			if(file!=null){
-				selectedFileNames.add(file.getName());
+		if(allSelectedFiles!=null&&allSelectedFiles.length>0){
+			for(File file: allSelectedFiles){ 
+				if(file!=null){
+					selectedFileNames.add(file.getName());
+				}
 			}
 		}
 		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, selectedFileNames);
@@ -102,8 +108,8 @@ public class SingleStudentFragment extends Fragment {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-				File targetFile = new File(getSourceDir().getPath()+File.separator+parent.getItemAtPosition(position).toString());
-				Uri targetFileUri = Uri.fromFile(targetFile);
+				final File targetFile = new File(getSourceDir().getPath()+File.separator+parent.getItemAtPosition(position).toString());
+				final Uri targetFileUri = Uri.fromFile(targetFile);
 				String fileExtension = MimeTypeMap
 						.getFileExtensionFromUrl(targetFileUri.toString());
 				String mimeType = MimeTypeMap.getSingleton()
@@ -111,9 +117,34 @@ public class SingleStudentFragment extends Fragment {
 				Log.i(TAG, ">>>ooPath: "+targetFileUri.getPath()+" | " + mimeType);
 				
 				if(mimeType.split("/")[0].equals("image")){
-					Intent newIntent = new Intent( getActivity(), FeatherActivity.class );
-					newIntent.setData( targetFileUri );
-					startActivityForResult( newIntent, 1 ); 
+					
+					final CharSequence[] items = new CharSequence[]{"View","Grade this test"};
+					AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
+					builder.create();
+					builder.setItems(items, new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int item) {
+							if(item==0){
+								Intent intent = new Intent();
+								intent.setAction(Intent.ACTION_VIEW);
+								intent.setDataAndType(targetFileUri, "image/*");
+								startActivity(intent);
+							}
+							else if(item==1){
+								Intent photoEditIntent = new Intent( getActivity(), FeatherActivity.class );
+								photoEditIntent.setData( targetFileUri );
+								photoEditIntent.putExtra(Constants.EXTRA_OUTPUT, targetFileUri);
+								photoEditIntent.putExtra(Constants.EXTRA_TOOLS_LIST, new String[]{"TEXT","ADJUST", "DRAWING"});
+								photoEditIntent.putExtra(Constants.EXTRA_OUTPUT_FORMAT, Bitmap.CompressFormat.JPEG);
+								photoEditIntent.putExtra(Constants.EXTRA_MAX_IMAGE_SIZE, MAX_IMAGE_SIZE);
+								startActivityForResult( photoEditIntent, 1 ); 
+							}
+							
+						}
+					});
+					AlertDialog alert = builder.create();
+					alert.show();
 				}
 				return false;
 			}

@@ -31,7 +31,7 @@ public class DashboardFragment extends Fragment {
 		String[] values=null;
 		if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
 			values = new String[]{
-		        	"View subjects", "Create new lesson", "Create new test" ,"Logout"
+		        	"View subjects", "Create new lesson", "Edit profile" ,"Logout"
 	        };
 		}
 		else if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
@@ -43,6 +43,7 @@ public class DashboardFragment extends Fragment {
         ArrayList<String> list = new ArrayList<String>();
         for(int i=0;i<values.length;i++){
         	list.add(values[i]);
+        	
         }
 		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
 		ListView listDashboardTasks =(ListView) thisView.findViewById(R.id.listDashboardTasks);

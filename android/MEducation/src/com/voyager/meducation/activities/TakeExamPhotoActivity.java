@@ -14,6 +14,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Picture;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.hardware.Camera;
@@ -44,6 +46,10 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 	public static final String TAG = TakeExamPhotoActivity.class
 			.getSimpleName();
 
+	private static final int PREVIEW_WIDTH = 85;
+	private static final int PREVIEW_HEIGHT = 100;
+	
+	
 	private SurfaceView surface_view;
 	private Camera mCamera;
 	SurfaceHolder.Callback sh_ob = null;
@@ -98,6 +104,10 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 			public void surfaceCreated(SurfaceHolder holder) {
 				mCamera = Camera.open();
 				mCamera.setDisplayOrientation(90);
+//				Camera.Parameters params = mCamera.getParameters();
+//				params.setPreviewFormat(ImageFormat.JPEG);
+//				params.setPictureSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+//				mCamera.setParameters(params);
 
 				try {
 					mCamera.setPreviewDisplay(holder);
@@ -126,7 +136,7 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-
+			camera.startPreview();
 			File pictureFileDir = getDir();
 
 			if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {

@@ -3,6 +3,7 @@ package com.voyager.meducation;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -28,7 +29,7 @@ public class MEducationApplication extends Application {
 
 	private DropboxAPI<AndroidAuthSession> dropboxApi;
 
-	private static final String IS_LOGGED_IN = "is_logged_in";
+	private static final String IS_LOGGED_IN  = "is_logged_in";
 	private static final String IS_DROPBOX_LINKED = "is_dropbox_linked";
 	SharedPreferences prefs;
 	
@@ -68,6 +69,7 @@ public class MEducationApplication extends Application {
 	}
 
 	public void setKeys(String key, String secret){
+		Log.d(TAG, ">>>SET THE KEYS as " + key+" , "+secret);
 		prefs.edit().putString(ACCESS_KEY_NAME, key);
         prefs.edit().putString(ACCESS_SECRET_NAME, secret);
 	}
@@ -78,6 +80,7 @@ public class MEducationApplication extends Application {
 
         String[] stored = getKeys();
         if (stored != null) {
+        	Log.d(TAG,">>>KEYS STORED");
             AccessTokenPair accessToken = new AccessTokenPair(stored[0], stored[1]);
             session = new AndroidAuthSession(appKeyPair, ACCESS_TYPE, accessToken);
         } else {
