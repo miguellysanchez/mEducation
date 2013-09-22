@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -60,30 +62,71 @@ public class LoginActivity extends Activity {
 					MainPageActivity.class);
 			startActivity(dashboardIntent);
 		}
+		findViewById(R.id.btnDemoHelp).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								LoginActivity.this);
+						builder.setTitle("Demo Login Instructions");
+						builder.setMessage("To login as a Teacher:\n   Input \"Teacher\" in USERNAME field\n\nTo login as a Proctor:\n   Input \"Proctor\" in USERNAME field\n\nOtherwise, USERNAME is registered as student account\n\n\nLastly, PASSWORD field should match USERNAME field\nto be able to successfully login");
+						builder.show();
+					}
+				});
+
 		findViewById(R.id.btnLogin).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				if (mDBApi.getSession().authenticationSuccessful()) {
+				// if (mDBApi.getSession().authenticationSuccessful()) {
+				EditText editLoginUsername = (EditText) findViewById(R.id.editLoginUsername);
+				EditText editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
+				boolean isMatch = editLoginUsername.getText().toString()
+						.equals(editLoginPassword.getText().toString())
+						&& !editLoginUsername.getText().toString().isEmpty();
+				if (isMatch) {
+					if (editLoginUsername.getText().toString()
+							.contains("Teacher")) {
+						Toast.makeText(getApplicationContext(),
+								"LOGGED IN AS A TEACHER", Toast.LENGTH_LONG)
+								.show();
+						((MEducationApplication) getApplication())
+						.setAccountType(MEducationApplication.TEACHER);
+					} else if (editLoginUsername.getText().toString()
+							.contains("Proctor")
+							&& isMatch) {
+						Toast.makeText(getApplicationContext(),
+								"LOGGED IN AS A PROCTOR", Toast.LENGTH_LONG)
+								.show();
+						((MEducationApplication) getApplication())
+						.setAccountType(MEducationApplication.PROCTOR);
+					} else if (isMatch) {
+						Toast.makeText(getApplicationContext(),
+								"LOGGED IN AS A STUDENT", Toast.LENGTH_LONG)
+								.show();
+						((MEducationApplication) getApplication())
+						.setAccountType(MEducationApplication.STUDENT);
+					}
+					((MEducationApplication)getApplication()).setUsername(editLoginUsername.getText().toString());
+					Log.d(TAG, ">>>LOGGING");
+					//START MAINPAGEACTIVITY
 					Intent dashboardIntent = new Intent(LoginActivity.this,
 							MainPageActivity.class);
-					((MEducationApplication) getApplication())
-							.setIsLoggedIn(true);
-					// if (System.currentTimeMillis() % 2 == 0) {
-					((MEducationApplication) getApplication())
-							.setAccountType(MEducationApplication.TEACHER);
-					// } else {
-					// ((MEducationApplication) getApplication())
-					// .setAccountType(MEducationApplication.PROCTOR);
-					// }
-
+					((MEducationApplication) getApplication()).setIsLoggedIn(true); // if
 					startActivity(dashboardIntent);
 					overridePendingTransition(R.anim.right_slide_in,
 							R.anim.left_slide_out);
-//				}
-//				else{
-//					Toast.makeText(LoginActivity.this, "Cannot login without link to Dropbox", Toast.LENGTH_SHORT).show();
-//					mDBApi.getSession().startAuthentication(LoginActivity.this);
-//				}
+				} else {
+					Toast.makeText(getApplicationContext(), "INVALID LOGIN",
+							Toast.LENGTH_LONG).show();
+				}
+				
+				// }
+				// else{
+				// Toast.makeText(LoginActivity.this,
+				// "Cannot login without link to Dropbox",
+				// Toast.LENGTH_SHORT).show();
+				// mDBApi.getSession().startAuthentication(LoginActivity.this);
+				// }
 			}
 		});
 

@@ -33,7 +33,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,7 +53,7 @@ public class MainPageActivity extends Activity implements TabListener {
 	SingleStudentFragment mSingleStudentFragment;
 	int currentTab = 0;
 	DropboxAPI<AndroidAuthSession> mDBApi;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +80,10 @@ public class MainPageActivity extends Activity implements TabListener {
 
 	// /ACTIONS INVOKED BY DASHBOARDFRAGMENT
 	public void logout() {
+		((MEducationApplication)getApplication()).setAccountType(null);
+		((MEducationApplication)getApplication()).setUsername(null);
+		((MEducationApplication)getApplication()).setIsLoggedIn(false);
+		
 		finish();
 		overridePendingTransition(R.anim.left_slide_in, R.anim.right_slide_out);
 	}
@@ -157,13 +160,19 @@ public class MainPageActivity extends Activity implements TabListener {
 	// /ACTIONS INVOKED BY STUDENTSFRAGMENT
 	public void goToSingleStudent(String name) {
 		actionBar.addTab(actionBar.newTab().setText(name).setTabListener(this));
+		mSingleStudentFragment = null;
 		mSingleStudentFragment = new SingleStudentFragment(name);
 		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
 		fTrans.setCustomAnimations(R.anim.frag_right_slide_in,
 				R.anim.frag_left_slide_out);
 		fTrans.replace(R.id.fragment_container, mSingleStudentFragment,
 				SingleStudentFragment.TAG).commit();
-		currentTab = 5;
+		if(((MEducationApplication)getApplication()).getAccountType().equals(MEducationApplication.STUDENT)){
+			currentTab = 3;
+		}
+		else{
+			currentTab = 5;
+		}
 		getActionBar().setSelectedNavigationItem(currentTab);
 		getActionBar().getSelectedTab().setText(name);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

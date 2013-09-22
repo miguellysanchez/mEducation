@@ -18,7 +18,9 @@ public class MEducationApplication extends Application {
 	
 	public static final String TEACHER = "teacher";
 	public static final String PROCTOR = "proctor";
+	public static final String STUDENT = "student";
 	public static final String ACCOUNT_TYPE = "account_type";
+	public static final String USERNAME = "username";
     public static final String ACCESS_KEY_NAME = "ACCESS_KEY";
     public static final String ACCESS_SECRET_NAME = "ACCESS_SECRET";
 	
@@ -53,6 +55,14 @@ public class MEducationApplication extends Application {
 	
 	public void setAccountType(String acctType){
 		prefs.edit().putString(ACCOUNT_TYPE, acctType).commit();
+	}
+	
+	public String getUsername(){
+		return prefs.getString(USERNAME, null);
+	}
+	
+	public void setUsername(String uname){
+		prefs.edit().putString(USERNAME, uname).commit();
 	}
 	
 	public String[] getKeys() {

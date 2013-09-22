@@ -40,6 +40,8 @@ public class LessonsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View thisView = inflater.inflate(R.layout.dashboard_fragment, container, false);
 
+		final String acctType = ((MEducationApplication)getActivity().getApplication()).getAccountType();
+		final String username = ((MEducationApplication)getActivity().getApplication()).getUsername();
 		if (subject.equals("Science")) {
 			values = new String[] {
 					"Human Body", "Astronomy", "Measurement", "Scientific Method"
@@ -84,8 +86,12 @@ public class LessonsFragment extends Fragment {
 					int position, long id) {
 				switch (position) {
 				default:
-					((MainPageActivity)getActivity()).goToClassrooms();
-					
+					if(acctType.equals(MEducationApplication.STUDENT)){
+						((MainPageActivity)getActivity()).goToSingleStudent(username);
+					}
+					else{
+						((MainPageActivity)getActivity()).goToClassrooms();
+					}
 				break;
 				}
 

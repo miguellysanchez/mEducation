@@ -39,7 +39,7 @@ public class ClassroomsFragment extends Fragment {
 	        	"Section A", "Section B", "Section C", "Section D"
 	        };
 		}
-		else if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
+		else if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.PROCTOR)){
 			values = new String[]{
 		        	"Section A", "Section B", "Section C", "Section D"
 		    };

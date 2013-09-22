@@ -29,14 +29,21 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View thisView = inflater.inflate(R.layout.dashboard_fragment, container, false);
 		String[] values=null;
-		if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
+		final String acctType = ((MEducationApplication) getActivity().getApplication()).getAccountType();
+
+		if(acctType.equals(MEducationApplication.TEACHER)){
 			values = new String[]{
-		        	"View subjects", "Create new lesson", "Edit profile" ,"Logout"
+		        	"View subjects", "Edit Profile", "Create new lesson","Logout"
 	        };
 		}
-		else if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
+		else if(acctType.equals(MEducationApplication.PROCTOR)){
 			values = new String[]{
-		        	"View teachers", "A", "Start dsd test"
+		        	"View subjects", "Edit Profile", "Logout"
+		    };
+		}
+		else if(acctType.equals(MEducationApplication.STUDENT)){
+			values = new String[]{
+		        	"View subjects", "Edit Profile", "Logout"
 		    };
 		}
         
@@ -60,9 +67,14 @@ public class DashboardFragment extends Fragment {
 				case 1:
 					break;
 				case 2:
+					if(acctType.equals(MEducationApplication.TEACHER)){
+						// TODO CREATE LESSONS
+					}
+					else{
+						((MainPageActivity)getActivity()).logout();
+					}	
 					break;
 				default:
-					((MEducationApplication)getActivity().getApplication()).setIsLoggedIn(false);
 					((MainPageActivity)getActivity()).logout();
 				break;
 				}
