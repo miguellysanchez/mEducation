@@ -77,56 +77,59 @@ public class LoginActivity extends Activity {
 		findViewById(R.id.btnLogin).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// if (mDBApi.getSession().authenticationSuccessful()) {
-				EditText editLoginUsername = (EditText) findViewById(R.id.editLoginUsername);
-				EditText editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
-				boolean isMatch = editLoginUsername.getText().toString()
-						.equals(editLoginPassword.getText().toString())
-						&& !editLoginUsername.getText().toString().isEmpty();
-				if (isMatch) {
-					if (editLoginUsername.getText().toString()
-							.contains("Teacher")) {
-						Toast.makeText(getApplicationContext(),
-								"LOGGED IN AS A TEACHER", Toast.LENGTH_LONG)
-								.show();
+				if (mDBApi.getSession().authenticationSuccessful()) {
+					EditText editLoginUsername = (EditText) findViewById(R.id.editLoginUsername);
+					EditText editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
+					boolean isMatch = editLoginUsername.getText().toString()
+							.equals(editLoginPassword.getText().toString())
+							&& !editLoginUsername.getText().toString()
+									.isEmpty();
+					if (isMatch) {
+						if (editLoginUsername.getText().toString()
+								.contains("Teacher")) {
+							Toast.makeText(getApplicationContext(),
+									"LOGGED IN AS A TEACHER", Toast.LENGTH_LONG)
+									.show();
+							((MEducationApplication) getApplication())
+									.setAccountType(MEducationApplication.TEACHER);
+						} else if (editLoginUsername.getText().toString()
+								.contains("Proctor")
+								&& isMatch) {
+							Toast.makeText(getApplicationContext(),
+									"LOGGED IN AS A PROCTOR", Toast.LENGTH_LONG)
+									.show();
+							((MEducationApplication) getApplication())
+									.setAccountType(MEducationApplication.PROCTOR);
+						} else if (isMatch) {
+							Toast.makeText(getApplicationContext(),
+									"LOGGED IN AS A STUDENT", Toast.LENGTH_LONG)
+									.show();
+							((MEducationApplication) getApplication())
+									.setAccountType(MEducationApplication.STUDENT);
+						}
 						((MEducationApplication) getApplication())
-						.setAccountType(MEducationApplication.TEACHER);
-					} else if (editLoginUsername.getText().toString()
-							.contains("Proctor")
-							&& isMatch) {
-						Toast.makeText(getApplicationContext(),
-								"LOGGED IN AS A PROCTOR", Toast.LENGTH_LONG)
-								.show();
+								.setUsername(editLoginUsername.getText()
+										.toString());
+						Log.d(TAG, ">>>LOGGING");
+						// START MAINPAGEACTIVITY
+						Intent dashboardIntent = new Intent(LoginActivity.this,
+								MainPageActivity.class);
 						((MEducationApplication) getApplication())
-						.setAccountType(MEducationApplication.PROCTOR);
-					} else if (isMatch) {
+								.setIsLoggedIn(true); // if
+						startActivity(dashboardIntent);
+						overridePendingTransition(R.anim.right_slide_in,
+								R.anim.left_slide_out);
+					} else {
 						Toast.makeText(getApplicationContext(),
-								"LOGGED IN AS A STUDENT", Toast.LENGTH_LONG)
-								.show();
-						((MEducationApplication) getApplication())
-						.setAccountType(MEducationApplication.STUDENT);
+								"INVALID LOGIN", Toast.LENGTH_LONG).show();
 					}
-					((MEducationApplication)getApplication()).setUsername(editLoginUsername.getText().toString());
-					Log.d(TAG, ">>>LOGGING");
-					//START MAINPAGEACTIVITY
-					Intent dashboardIntent = new Intent(LoginActivity.this,
-							MainPageActivity.class);
-					((MEducationApplication) getApplication()).setIsLoggedIn(true); // if
-					startActivity(dashboardIntent);
-					overridePendingTransition(R.anim.right_slide_in,
-							R.anim.left_slide_out);
+
 				} else {
-					Toast.makeText(getApplicationContext(), "INVALID LOGIN",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(LoginActivity.this,
+							"Cannot login without link to Dropbox",
+							Toast.LENGTH_SHORT).show();
+					mDBApi.getSession().startAuthentication(LoginActivity.this);
 				}
-				
-				// }
-				// else{
-				// Toast.makeText(LoginActivity.this,
-				// "Cannot login without link to Dropbox",
-				// Toast.LENGTH_SHORT).show();
-				// mDBApi.getSession().startAuthentication(LoginActivity.this);
-				// }
 			}
 		});
 

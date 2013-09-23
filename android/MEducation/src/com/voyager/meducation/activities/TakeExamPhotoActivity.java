@@ -195,7 +195,7 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 			}
 
 			String date = DateUtils.getDateString();
-			String photoFile = studentName + "_testpaper_" + date + ".jpg";
+			String photoFile = "Mathematics_Division_Section A_"+studentName + "_testpaper_-_" + date + ".jpg";
 
 			String filename = pictureFileDir.getPath() + File.separator
 					+ photoFile;

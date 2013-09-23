@@ -38,7 +38,7 @@ public class LessonsFragment extends Fragment {
 	
 	ActionBar actionBar;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View thisView = inflater.inflate(R.layout.dashboard_fragment, container, false);
+		View thisView = inflater.inflate(R.layout.lessons_fragment, container, false);
 
 		final String acctType = ((MEducationApplication)getActivity().getApplication()).getAccountType();
 		final String username = ((MEducationApplication)getActivity().getApplication()).getUsername();
@@ -77,9 +77,9 @@ public class LessonsFragment extends Fragment {
         	list.add(values[i]);
         }
 		final ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, list);
-		ListView listDashboardTasks =(ListView) thisView.findViewById(R.id.listDashboardTasks);
-		listDashboardTasks.setAdapter(adapter);
-		listDashboardTasks.setOnItemClickListener(new OnItemClickListener() {
+		ListView listLessons =(ListView) thisView.findViewById(R.id.listLessons);
+		listLessons.setAdapter(adapter);
+		listLessons.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
@@ -98,6 +98,8 @@ public class LessonsFragment extends Fragment {
 			}
 
 		});
+		
+		
 		// Inflate the layout for this fragment
         return thisView;
     }

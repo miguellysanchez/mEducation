@@ -50,7 +50,7 @@ public class SingleStudentFragment extends Fragment {
 		allSelectedFiles = sourceDir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
-				if(!f.isDirectory()&&(f.getName().split("_")[0]).equals(studentName)){
+				if(!f.isDirectory()&&f.getName().split("_").length>3&& ( f.getName().split("_")[3].equals(studentName)||f.getName().split("_")[3].equals("-")  )){
 					Log.i(TAG,">>>New file"+ f.getPath() + " | Name: "+f.getName());
 					return true;
 				}
