@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_theme_forms" >
+
+    <Button
+        android:id="@+id/btnCreateNewLesson"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="CREATE LESSON" />
+
+    <ScrollView
+        android:id="@+id/scrollCreateLessonFields"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/btnCreateNewLesson"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/bg_theme_forms"
+        android:padding="5dp" >
+
+        <RelativeLayout
+            android:id="@+id/createLessonFieldsOuter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <EditText
+                android:id="@+id/editLessonTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:gravity="center_horizontal"
+                android:hint="Lesson Title"
+                android:inputType="textPersonName"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:textSize="24dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textCreateLessonSubject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editLessonTitle"
+                android:layout_marginBottom="34dp"
+                android:text="SUBJECT: " />
+
+            <Spinner
+                android:id="@+id/dropdownCreateLessonSubjectsList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editLessonTitle"
+                android:layout_marginBottom="10dp"
+                android:layout_toRightOf="@id/textCreateLessonSubject"
+                android:background="@color/white"
+                android:entries="@array/subjects_list"
+                android:gravity="center_vertical" />
+
+            <LinearLayout
+                android:id="@+id/createLessonFieldsInner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dropdownCreateLessonSubjectsList"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/btnAddCreateLessonField"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/createLessonFieldsInner"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_btn_add_resource" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

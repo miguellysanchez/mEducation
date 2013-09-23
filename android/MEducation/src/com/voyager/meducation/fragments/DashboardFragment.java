@@ -17,14 +17,15 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
+import com.voyager.meducation.activities.CreateLessonActivity;
 import com.voyager.meducation.activities.LoginActivity;
 import com.voyager.meducation.activities.MainPageActivity;
+import com.voyager.meducation.activities.TakeExamPhotoActivity;
 
 public class DashboardFragment extends Fragment {
 
 	public static final String TAG = DashboardFragment.class.getSimpleName();
 	
-	public static final String WELCOME_MSG = "Welcome to M-Education";
 	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View thisView = inflater.inflate(R.layout.dashboard_fragment, container, false);
@@ -68,7 +69,9 @@ public class DashboardFragment extends Fragment {
 					break;
 				case 2:
 					if(acctType.equals(MEducationApplication.TEACHER)){
-						// TODO CREATE LESSONS
+						Intent createLessonIntent = new Intent(getActivity(),
+								CreateLessonActivity.class);
+						startActivity(createLessonIntent);
 					}
 					else{
 						((MainPageActivity)getActivity()).logout();

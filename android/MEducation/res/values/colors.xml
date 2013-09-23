@@ -2,6 +2,7 @@
 <resources>
     <color name="bg_theme">#FFE8EEDD</color>
    	<color name="bg_theme_student">#FFD8DDC0</color>
+   	<color name="bg_theme_forms">#FFC8DDB0</color>
     
     <color name="white">#FFFFFFFF</color>
 	<color name="gray">#FF444444</color>

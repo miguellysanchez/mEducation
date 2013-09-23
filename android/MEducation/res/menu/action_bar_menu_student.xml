@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_sync"
+        android:icon="@drawable/ic_action_sync"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:icon="@drawable/ic_action_search"
         android:title="Sync files online">
     </item>
     <item
-        android:id="@+id/action_camera_test"
+        android:id="@+id/action_check_subject_grade"
+        android:icon="@drawable/ic_action_view_grade"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:icon="@drawable/ic_camera_test"
-        android:title="Exam/Test scanner">
-        </item>
-</menu> 
+        android:title="Check subject grade">
+    </item>
+</menu>

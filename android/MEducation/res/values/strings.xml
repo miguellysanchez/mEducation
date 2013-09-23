@@ -6,6 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="register_as_proctor"><b><u>Register as a Proctor</u></b></string>
     <string name="register_as_teacher"><b><u>Register as a Teacher</u></b></string>
+    <string name="no_lesson_resource">--Enter file--</string>
 
     <string-array name="student_names">
         <item>Juan Luna</item>
@@ -15,6 +16,15 @@
         <item>JV Vitug</item>
         <item>Edgar Parokya</item>
         <item>Johnny Bravo</item>
+    </string-array>
+    <string-array name="subjects_list">
+        <item>Science</item>
+        <item>Mathematics</item>
+        <item>English</item>
+        <item>Filipino</item>
+        <item>Art</item>
+        <item>Music</item>
+        <item>Computer</item>
     </string-array>
 
 </resources>

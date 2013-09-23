@@ -91,6 +91,10 @@
             android:name="com.voyager.meducation.activities.MainPageActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.voyager.meducation.activities.CreateLessonActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

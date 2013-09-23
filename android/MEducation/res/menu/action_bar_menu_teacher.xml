@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    
+    <item
+        android:id="@+id/action_add_subject"
+        android:icon="@drawable/ic_action_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Add subjects">
+    </item><item
+        android:id="@+id/action_add_lesson"
+        android:icon="@drawable/ic_action_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Add lessons to subject">
+    </item><item
+        android:id="@+id/action_add_classroom"
+        android:icon="@drawable/ic_action_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Add classroom">
+    </item><item
+        android:id="@+id/action_add_student"
+        android:icon="@drawable/ic_action_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Add student to classroom">
+    </item>
+    <item
+        android:id="@+id/action_view_grade"
+        android:icon="@drawable/ic_action_view_grade"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="View student grades">
+    </item>
+    
+    <item
+        android:id="@+id/action_camera_test"
+        android:icon="@drawable/ic_camera_test"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Exam/Test scanner">
+    </item>
+    <item
+        android:id="@+id/action_sync"
+        android:icon="@drawable/ic_action_sync"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="Sync files online">
+    </item>
+
+</menu>

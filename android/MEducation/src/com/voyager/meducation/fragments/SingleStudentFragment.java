@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.aviary.android.feather.FeatherActivity;
 import com.aviary.android.feather.library.Constants;
+import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
 
 import android.app.AlertDialog;
@@ -61,6 +62,8 @@ public class SingleStudentFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		String acctType = ((MEducationApplication)getActivity().getApplication()).getAccountType();
+		
 		thisView = inflater.inflate(R.layout.single_student_fragment, null);
 
 		ListView listStudentFiles = (ListView)thisView.findViewById(R.id.listFiles);
@@ -103,53 +106,54 @@ public class SingleStudentFragment extends Fragment {
 				}
 			}
 		});
+		if(acctType.equals(MEducationApplication.TEACHER)){
+			listStudentFiles.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-		listStudentFiles.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-				final File targetFile = new File(getSourceDir().getPath()+File.separator+parent.getItemAtPosition(position).toString());
-				final Uri targetFileUri = Uri.fromFile(targetFile);
-				String fileExtension = MimeTypeMap
-						.getFileExtensionFromUrl(targetFileUri.toString());
-				String mimeType = MimeTypeMap.getSingleton()
-						.getMimeTypeFromExtension(fileExtension);
-				Log.i(TAG, ">>>ooPath: "+targetFileUri.getPath()+" | " + mimeType);
-				
-				if(mimeType.split("/")[0].equals("image")){
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+					final File targetFile = new File(getSourceDir().getPath()+File.separator+parent.getItemAtPosition(position).toString());
+					final Uri targetFileUri = Uri.fromFile(targetFile);
+					String fileExtension = MimeTypeMap
+							.getFileExtensionFromUrl(targetFileUri.toString());
+					String mimeType = MimeTypeMap.getSingleton()
+							.getMimeTypeFromExtension(fileExtension);
+					Log.i(TAG, ">>>ooPath: "+targetFileUri.getPath()+" | " + mimeType);
 					
-					final CharSequence[] items = new CharSequence[]{"View","Grade this test"};
-					AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
-					builder.create();
-					builder.setItems(items, new DialogInterface.OnClickListener() {
+					if(mimeType.split("/")[0].equals("image")){
 						
-						@Override
-						public void onClick(DialogInterface dialog, int item) {
-							if(item==0){
-								Intent intent = new Intent();
-								intent.setAction(Intent.ACTION_VIEW);
-								intent.setDataAndType(targetFileUri, "image/*");
-								startActivity(intent);
-							}
-							else if(item==1){
-								Intent photoEditIntent = new Intent( getActivity(), FeatherActivity.class );
-								photoEditIntent.setData( targetFileUri );
-								photoEditIntent.putExtra(Constants.EXTRA_OUTPUT, targetFileUri);
-								photoEditIntent.putExtra(Constants.EXTRA_TOOLS_LIST, new String[]{"TEXT","ADJUST", "DRAWING"});
-								photoEditIntent.putExtra(Constants.EXTRA_OUTPUT_FORMAT, Bitmap.CompressFormat.JPEG);
-								photoEditIntent.putExtra(Constants.EXTRA_MAX_IMAGE_SIZE, MAX_IMAGE_SIZE);
-								startActivityForResult( photoEditIntent, 1 ); 
-							}
+						final CharSequence[] items = new CharSequence[]{"View","Grade this test"};
+						AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
+						builder.create();
+						builder.setItems(items, new DialogInterface.OnClickListener() {
 							
-						}
-					});
-					AlertDialog alert = builder.create();
-					alert.show();
+							@Override
+							public void onClick(DialogInterface dialog, int item) {
+								if(item==0){
+									Intent intent = new Intent();
+									intent.setAction(Intent.ACTION_VIEW);
+									intent.setDataAndType(targetFileUri, "image/*");
+									startActivity(intent);
+								}
+								else if(item==1){
+									Intent photoEditIntent = new Intent( getActivity(), FeatherActivity.class );
+									photoEditIntent.setData( targetFileUri );
+									photoEditIntent.putExtra(Constants.EXTRA_OUTPUT, targetFileUri);
+									photoEditIntent.putExtra(Constants.EXTRA_TOOLS_LIST, new String[]{"TEXT","ADJUST", "DRAWING"});
+									photoEditIntent.putExtra(Constants.EXTRA_OUTPUT_FORMAT, Bitmap.CompressFormat.JPEG);
+									photoEditIntent.putExtra(Constants.EXTRA_MAX_IMAGE_SIZE, MAX_IMAGE_SIZE);
+									startActivityForResult( photoEditIntent, 1 ); 
+								}
+								
+							}
+						});
+						AlertDialog alert = builder.create();
+						alert.show();
+					}
+					return false;
 				}
-				return false;
-			}
 		
-		});
+			});
+		}
 		
 		return thisView;
 	}

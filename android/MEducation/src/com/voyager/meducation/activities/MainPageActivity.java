@@ -27,10 +27,13 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -43,7 +46,8 @@ import android.widget.Toast;
 public class MainPageActivity extends Activity implements TabListener {
 
 	public static final String TAG = MainPageActivity.class.getSimpleName();
-
+	public static final String WELCOME_MSG = "Welcome to M-Education, ";
+	
 	ActionBar actionBar;
 	DashboardFragment mDashboardFragment;
 	SubjectsFragment mSubjectsFragment;
@@ -53,7 +57,7 @@ public class MainPageActivity extends Activity implements TabListener {
 	SingleStudentFragment mSingleStudentFragment;
 	int currentTab = 0;
 	DropboxAPI<AndroidAuthSession> mDBApi;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,6 +71,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
+		mDashboardFragment = null;
 		mDashboardFragment = new DashboardFragment();
 
 		fragmentTransaction.replace(R.id.fragment_container,
@@ -75,21 +80,27 @@ public class MainPageActivity extends Activity implements TabListener {
 		actionBar.addTab(actionBar.newTab().setText("TASKS")
 				.setTabListener(this));
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+		invalidateOptionsMenu();
+		
+//		AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//		builder.setTitle("MEducation");
+//		builder.setMessage(WELCOME_MSG+((MEducationApplication)getApplication()).getUsername());
+//		builder.show();
 	}
 
 	// /ACTIONS INVOKED BY DASHBOARDFRAGMENT
 	public void logout() {
-		((MEducationApplication)getApplication()).setAccountType(null);
-		((MEducationApplication)getApplication()).setUsername(null);
-		((MEducationApplication)getApplication()).setIsLoggedIn(false);
-		
+		((MEducationApplication) getApplication()).setAccountType(null);
+		((MEducationApplication) getApplication()).setUsername(null);
+		((MEducationApplication) getApplication()).setIsLoggedIn(false);
+
 		finish();
 		overridePendingTransition(R.anim.left_slide_in, R.anim.right_slide_out);
 	}
 
 	public void goToSubjects() {
 		Log.d(TAG, ">>>TO SUBJ");
+		mSubjectsFragment = null;
 		mSubjectsFragment = new SubjectsFragment();
 		actionBar.addTab(actionBar.newTab().setText("SUBJECTS")
 				.setTabListener(this));
@@ -101,12 +112,14 @@ public class MainPageActivity extends Activity implements TabListener {
 		currentTab = 1;
 		getActionBar().setSelectedNavigationItem(currentTab);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		invalidateOptionsMenu();
 
 	}
 
 	// INVOKED BY SUBJECTSFRAGMENT
 	public void goToLessons(String subject) {
 		Log.d(TAG, ">>>TO LESSONS");
+		mLessonsFragment = null;
 		mLessonsFragment = new LessonsFragment(subject);
 		actionBar.addTab(actionBar.newTab().setText("LESSONS")
 				.setTabListener(this));
@@ -118,6 +131,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		currentTab = 2;
 		getActionBar().setSelectedNavigationItem(currentTab);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		invalidateOptionsMenu();
 
 	}
 
@@ -126,6 +140,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		Log.d(TAG, ">>>TO CLASSROOM");
 		actionBar.addTab(actionBar.newTab().setText("CLASSROOMS")
 				.setTabListener(this));
+		mClassroomsFragment = null;
 		mClassroomsFragment = new ClassroomsFragment();
 
 		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
@@ -136,6 +151,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		currentTab = 3;
 		getActionBar().setSelectedNavigationItem(currentTab);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		invalidateOptionsMenu();
 
 	}
 
@@ -144,6 +160,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		Log.d(TAG, ">>>TO STUDENTS");
 		actionBar.addTab(actionBar.newTab().setText("STUDENTS")
 				.setTabListener(this));
+		mStudentsFragment = null;
 		mStudentsFragment = new StudentClassroomFragment();
 
 		FragmentTransaction fTrans = getFragmentManager().beginTransaction();
@@ -154,6 +171,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		currentTab = 4;
 		getActionBar().setSelectedNavigationItem(currentTab);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		invalidateOptionsMenu();
 
 	}
 
@@ -167,16 +185,16 @@ public class MainPageActivity extends Activity implements TabListener {
 				R.anim.frag_left_slide_out);
 		fTrans.replace(R.id.fragment_container, mSingleStudentFragment,
 				SingleStudentFragment.TAG).commit();
-		if(((MEducationApplication)getApplication()).getAccountType().equals(MEducationApplication.STUDENT)){
+		if (((MEducationApplication) getApplication()).getAccountType().equals(
+				MEducationApplication.STUDENT)) {
 			currentTab = 3;
-		}
-		else{
+		} else {
 			currentTab = 5;
 		}
 		getActionBar().setSelectedNavigationItem(currentTab);
 		getActionBar().getSelectedTab().setText(name);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+		invalidateOptionsMenu();
 	}
 
 	@Override
@@ -200,39 +218,71 @@ public class MainPageActivity extends Activity implements TabListener {
 		FragmentTransaction fTrans = fManager.beginTransaction();
 		fTrans.setCustomAnimations(R.anim.frag_left_slide_in,
 				R.anim.frag_right_slide_out);
-		switch (currentTab) {
-		case 0:
-			fTrans.add(R.id.fragment_container, mDashboardFragment).commit();
-			mSubjectsFragment = null;
-			mLessonsFragment = null;
-			mClassroomsFragment = null;
-			mStudentsFragment = null;
-			mSingleStudentFragment = null;
-			break;
-		case 1:
-			fTrans.add(R.id.fragment_container, mSubjectsFragment).commit();
-			mLessonsFragment = null;
-			mClassroomsFragment = null;
-			mStudentsFragment = null;
-			mSingleStudentFragment = null;
-			break;
-		case 2:
-			fTrans.add(R.id.fragment_container, mLessonsFragment).commit();
-			mClassroomsFragment = null;
-			mStudentsFragment = null;
-			mSingleStudentFragment = null;
-			break;
-		case 3:
-			fTrans.add(R.id.fragment_container, mClassroomsFragment).commit();
-			mStudentsFragment = null;
-			mSingleStudentFragment = null;
-			break;
-		case 4:
-			fTrans.add(R.id.fragment_container, mStudentsFragment).commit();
-			mSingleStudentFragment = null;
-			break;
-		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			switch (currentTab) {
+			case 0:
+				fTrans.replace(R.id.fragment_container, mDashboardFragment)
+						.commit();
 
+				break;
+			case 1:
+				fTrans.replace(R.id.fragment_container, mSubjectsFragment)
+						.commit();
+
+				break;
+			case 2:
+				fTrans.replace(R.id.fragment_container, mLessonsFragment)
+						.commit();
+
+				break;
+			case 3:
+				if (((MEducationApplication) getApplication()).getAccountType()
+						.equals(MEducationApplication.STUDENT)) {
+					fTrans.replace(R.id.fragment_container,
+							mSingleStudentFragment).commit();
+				} else {
+					fTrans.replace(R.id.fragment_container, mClassroomsFragment)
+							.commit();
+
+				}
+				break;
+			case 4:
+				fTrans.replace(R.id.fragment_container, mStudentsFragment)
+						.commit();
+				break;
+			}
+		} else {
+			switch (currentTab) {
+			case 0:
+				fTrans.add(R.id.fragment_container, mDashboardFragment)
+						.commit();
+
+				break;
+			case 1:
+				fTrans.add(R.id.fragment_container, mSubjectsFragment).commit();
+
+				break;
+			case 2:
+				fTrans.add(R.id.fragment_container, mLessonsFragment).commit();
+
+				break;
+			case 3:
+				if (((MEducationApplication) getApplication()).getAccountType()
+						.equals(MEducationApplication.STUDENT)) {
+					fTrans.add(R.id.fragment_container, mSingleStudentFragment)
+							.commit();
+				} else {
+					fTrans.add(R.id.fragment_container, mClassroomsFragment)
+							.commit();
+
+				}
+				break;
+			case 4:
+				fTrans.add(R.id.fragment_container, mStudentsFragment).commit();
+				break;
+			}
+		}
+		invalidateOptionsMenu();
 	}
 
 	@Override
@@ -244,7 +294,46 @@ public class MainPageActivity extends Activity implements TabListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.action_bar_menu_student_classroom, menu);
+		if(((MEducationApplication) getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
+			inflater.inflate(R.menu.action_bar_menu_teacher, menu);
+			MenuItem miAddSubject = menu.findItem(R.id.action_add_subject); miAddSubject.setVisible(false);
+			MenuItem miAddLesson = menu.findItem(R.id.action_add_lesson); miAddLesson.setVisible(false);
+			MenuItem miAddClassroom = menu.findItem(R.id.action_add_classroom); miAddClassroom.setVisible(false);
+			MenuItem miAddStudent= menu.findItem(R.id.action_add_student); miAddStudent.setVisible(false);
+			MenuItem miViewGrades = menu.findItem(R.id.action_view_grade); miViewGrades.setVisible(false);
+			MenuItem miPhotoTest = menu.findItem(R.id.action_camera_test); miPhotoTest.setVisible(false);
+			if(currentTab==1){
+				miAddSubject.setVisible(true);
+			} else if (currentTab == 2) {
+				miAddLesson.setVisible(true);
+			} else if (currentTab == 3) {
+				miAddClassroom.setVisible(true);
+			} else if (currentTab == 4) {
+				miAddStudent.setVisible(true);
+				miPhotoTest.setVisible(true);
+			} else if (currentTab == 5) {
+				miViewGrades.setVisible(true);
+				miPhotoTest.setVisible(true);
+
+			}
+		}
+		else if(((MEducationApplication) getApplication()).getAccountType().equals(MEducationApplication.PROCTOR)){
+			inflater.inflate(R.menu.action_bar_menu_proctor, menu);
+			MenuItem miViewGrades = menu.findItem(R.id.action_view_grade); miViewGrades.setVisible(false);
+			MenuItem miPhotoTest = menu.findItem(R.id.action_camera_test); miPhotoTest.setVisible(false);
+			if (currentTab == 4) {
+				miPhotoTest.setVisible(true);
+			} else if (currentTab == 5) {
+				miViewGrades.setVisible(true);
+				miPhotoTest.setVisible(true);
+
+			}
+			
+		}
+		else if(((MEducationApplication) getApplication()).getAccountType().equals(MEducationApplication.STUDENT)){
+			inflater.inflate(R.menu.action_bar_menu_student, menu);
+
+		}
 		return true;
 	}
 
@@ -254,7 +343,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		case android.R.id.home:
 			onBackPressed();
 			break;
-		case R.id.action_search:
+		case R.id.action_sync:
 			(new UploadFiles()).execute();
 			break;
 		case R.id.action_camera_test:
@@ -263,6 +352,7 @@ public class MainPageActivity extends Activity implements TabListener {
 			startActivity(examPhotoIntent);
 			break;
 
+			
 		default:
 			break;
 		}
@@ -272,6 +362,9 @@ public class MainPageActivity extends Activity implements TabListener {
 
 	@Override
 	public void onBackPressed() {
+		if (currentTab > 0) {
+			onTabSelected(getActionBar().getTabAt(currentTab - 1), null);
+		}
 	}
 
 	@Override
@@ -301,7 +394,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		@Override
 		protected void onPreExecute() {
 			Toast.makeText(getApplicationContext(), "Starting Upload",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
@@ -319,7 +412,9 @@ public class MainPageActivity extends Activity implements TabListener {
 							+ file.getName(), fis, file.length(), null);
 				} catch (DropboxException e) {
 					Log.e(TAG, ">>>DropboxError");
+
 					e.printStackTrace();
+					cancel(true);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -333,6 +428,14 @@ public class MainPageActivity extends Activity implements TabListener {
 					Toast.LENGTH_LONG).show();
 
 			(new DownloadFiles()).execute();
+		}
+
+		@Override
+		protected void onCancelled() {
+			Toast.makeText(
+					getApplicationContext(),
+					"Upload Unsuccessful. This may have been cause by an unavailable network, or Dropbox unlinking",
+					Toast.LENGTH_LONG).show();
 		}
 
 		private List<File> getListFiles(File parentDir) {
@@ -356,7 +459,7 @@ public class MainPageActivity extends Activity implements TabListener {
 		@Override
 		protected void onPreExecute() {
 			Toast.makeText(getApplicationContext(), "Starting Download",
-					Toast.LENGTH_LONG).show();
+					Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
@@ -375,6 +478,7 @@ public class MainPageActivity extends Activity implements TabListener {
 				e.printStackTrace();
 			} catch (DropboxException e) {
 				e.printStackTrace();
+				cancel(true);
 			}
 			return null;
 		}
@@ -382,6 +486,14 @@ public class MainPageActivity extends Activity implements TabListener {
 		@Override
 		protected void onPostExecute(String result) {
 			Toast.makeText(getApplicationContext(), "SYNC COMPLETE",
+					Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		protected void onCancelled() {
+			Toast.makeText(
+					getApplicationContext(),
+					"Download Unsuccessful. This may have been cause by an unavailable network, or Dropbox unlinking. Not all files may have been downloaded.",
 					Toast.LENGTH_LONG).show();
 		}
 

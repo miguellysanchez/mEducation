@@ -33,18 +33,7 @@ public class StudentClassroomFragment extends Fragment {
 	ActionBar actionBar;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View thisView = inflater.inflate(R.layout.student_classroom_fragment, container, false);
-		String[] values=null;
-		if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
-			values = new String[]{
-		        	"Juan Luna", "Jose Rizal", "Yoshino Shinobu" , "Miguel Sanchez", "JV Vitug", "Edgar Parokya" , "Johnny Bravo"
-	        };
-		}
-		else if(((MEducationApplication) getActivity().getApplication()).getAccountType().equals(MEducationApplication.TEACHER)){
-			values = new String[]{
-		        	"Juan Luna", "Jose Rizal", "Yoshino Shinobu" , "Miguel Sanchez", "JV Vitug", "Edgar Parokya" , "Johnny Bravo"
-		    };
-		}
-        
+		String[] values={"Juan Luna", "Jose Rizal", "Yoshino Shinobu" , "Miguel Sanchez", "JV Vitug", "Edgar Parokya" , "Johnny Bravo"};
         ArrayList<String> list = new ArrayList<String>();
         for(int i=0;i<values.length;i++){
         	list.add(values[i]);

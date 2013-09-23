@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.voyager.meducation.R;
+import com.voyager.meducation.utils.DateUtils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -40,6 +41,9 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;;
+
 
 public class TakeExamPhotoActivity extends Activity implements OnClickListener, OnItemSelectedListener{
 
@@ -79,6 +83,8 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 					@Override
 					public void onClick(View v) {
 						Log.d(TAG, ">>>SHUTTER");
+						((ImageButton)findViewById(R.id.btnPhotoCapture)).setVisibility(View.GONE);
+						((ProgressBar)findViewById(R.id.progressBarWaitCapture)).setVisibility(View.VISIBLE);
 						final PhotoHandler photoHandler = new PhotoHandler(
 								TakeExamPhotoActivity.this);
 						mCamera.takePicture(null, null, photoHandler);
@@ -104,6 +110,7 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 			public void surfaceCreated(SurfaceHolder holder) {
 				mCamera = Camera.open();
 				mCamera.setDisplayOrientation(90);
+				mCamera.startPreview();
 //				Camera.Parameters params = mCamera.getParameters();
 //				params.setPreviewFormat(ImageFormat.JPEG);
 //				params.setPictureSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
@@ -126,7 +133,7 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 		return ob1;
 	}
 
-	static class PhotoHandler implements Camera.PictureCallback {
+	class PhotoHandler implements Camera.PictureCallback {
 
 		private final Context context;
 
@@ -136,45 +143,15 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
+			
+			
 			camera.startPreview();
-			File pictureFileDir = getDir();
-
-			if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {
-
-				Toast.makeText(context,
-						"Can't create directory to save image.",
-						Toast.LENGTH_LONG).show();
-				return;
-
-			}
-
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmddhhmmss");
-			String date = dateFormat.format(new Date());
-			String photoFile = studentName + "_testpaper_" + date + ".jpg";
-
-			String filename = pictureFileDir.getPath() + File.separator
-					+ photoFile;
-
-			File pictureFile = new File(filename);
-
-			try {
-				FileOutputStream fos = new FileOutputStream(pictureFile);
-				fos.write(data);
-				fos.close();
-				Toast.makeText(context, "New Image saved:" + photoFile,
-						Toast.LENGTH_LONG).show();
-			} catch (Exception error) {
-				Toast.makeText(context, "Image could not be saved.",
-						Toast.LENGTH_LONG).show();
-			}
+			
+			
+			StorePhotoTask storePhotoTask = new StorePhotoTask();
+			storePhotoTask.execute(data);
 		}
 
-		private File getDir() {
-			File sdDir = Environment
-					.getExternalStorageDirectory();
-			Log.i(TAG, ">>>DIRECTORY: "+sdDir.getPath());
-			return new File(sdDir, "MEducation");
-		}
 	}
 
 	@Override
@@ -203,6 +180,71 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 			break;
 		}
 		return true;
+	}
+	
+	class StorePhotoTask extends AsyncTask<byte[], String, String>{
+
+		@Override
+		protected String doInBackground(byte[]... args) {
+			File pictureFileDir = getDir();
+
+			byte[] data = args[0];
+			
+			if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {
+				cancel(true);
+			}
+
+			String date = DateUtils.getDateString();
+			String photoFile = studentName + "_testpaper_" + date + ".jpg";
+
+			String filename = pictureFileDir.getPath() + File.separator
+					+ photoFile;
+
+			File pictureFile = new File(filename);
+
+			try {
+				FileOutputStream fos = new FileOutputStream(pictureFile);
+				fos.write(data);
+				fos.close();
+				return photoFile;
+			} catch (Exception error) {
+				
+			}
+
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String filePath){
+			if(filePath!=null){
+				Toast.makeText(TakeExamPhotoActivity.this, "New Image saved:" + filePath,
+						Toast.LENGTH_LONG).show();
+			}
+			else{
+				Toast.makeText(TakeExamPhotoActivity.this, "Image could not be saved.",
+						Toast.LENGTH_LONG).show();
+			}
+			((ImageButton)findViewById(R.id.btnPhotoCapture)).setVisibility(View.VISIBLE);
+			((ProgressBar)findViewById(R.id.progressBarWaitCapture)).setVisibility(View.GONE);
+		}
+		
+		@Override
+		protected void onCancelled(){
+			Toast.makeText(TakeExamPhotoActivity.this,
+					"Can't create directory to save image.",
+					Toast.LENGTH_LONG).show();
+			((ImageButton)findViewById(R.id.btnPhotoCapture)).setVisibility(View.VISIBLE);
+			((ProgressBar)findViewById(R.id.progressBarWaitCapture)).setVisibility(View.GONE);
+		}
+		
+		private File getDir() {
+			File sdDir = Environment
+					.getExternalStorageDirectory();
+			Log.i(TAG, ">>>DIRECTORY: "+sdDir.getPath());
+			return new File(sdDir, "MEducation");
+		}
+		
 	}
 
 }
