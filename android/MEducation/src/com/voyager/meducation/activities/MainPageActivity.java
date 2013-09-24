@@ -28,9 +28,12 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -63,6 +66,10 @@ public class MainPageActivity extends Activity implements TabListener {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
+		//Create directory
+		(new File(Environment.getExternalStorageDirectory(), "MEducation")).mkdirs();
+		//
+		
 		mDBApi = ((MEducationApplication) getApplication()).getDBApi();
 
 		actionBar = getActionBar();
@@ -85,7 +92,8 @@ public class MainPageActivity extends Activity implements TabListener {
 //		AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 //		builder.setTitle("MEducation");
 //		builder.setMessage(WELCOME_MSG+((MEducationApplication)getApplication()).getUsername());
-//		builder.show();
+//		AlertDialog dialog = builder.create();
+//				dialog.show();
 	}
 
 	// /ACTIONS INVOKED BY DASHBOARDFRAGMENT
@@ -197,6 +205,13 @@ public class MainPageActivity extends Activity implements TabListener {
 		invalidateOptionsMenu();
 	}
 
+	public void goToLessonResources(String subjectName, String lessonName ){
+		Intent lessonResourcesIntent = new Intent(MainPageActivity.this, ViewLessonResourcesActivity.class);
+		lessonResourcesIntent.putExtra(ViewLessonResourcesActivity.SUBJECT_NAME, subjectName);
+		lessonResourcesIntent.putExtra(ViewLessonResourcesActivity.LESSON_NAME, lessonName);
+		startActivity(lessonResourcesIntent);
+	}
+	
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
@@ -344,7 +359,34 @@ public class MainPageActivity extends Activity implements TabListener {
 			onBackPressed();
 			break;
 		case R.id.action_sync:
-			(new UploadFiles()).execute();
+			if (mDBApi.getSession().authenticationSuccessful()){
+				if(((MEducationApplication)getApplication()).getAccountType().equals(MEducationApplication.STUDENT)){
+					(new DownloadFiles()).execute();
+				}
+				else{
+					(new UploadFiles()).execute();
+				}
+			}
+			else{
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainPageActivity.this);
+				builder.setTitle("Unable to sync");
+				builder.setMessage("Dropbox connection is required to sync. Please connect and link this account to the dropbox account, and try again.");
+				builder.setPositiveButton("Link", new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						mDBApi.getSession().startAuthentication(MainPageActivity.this);
+					}
+				});
+				builder.setNegativeButton("Cancel", new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				builder.create().show();
+			}
 			break;
 		case R.id.action_camera_test:
 			Intent examPhotoIntent = new Intent(MainPageActivity.this,
@@ -364,6 +406,27 @@ public class MainPageActivity extends Activity implements TabListener {
 	public void onBackPressed() {
 		if (currentTab > 0) {
 			onTabSelected(getActionBar().getTabAt(currentTab - 1), null);
+		}
+		else if(currentTab==0){
+			Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("MEducation");
+			builder.setMessage("Are you sure you want to logout?");
+			builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					logout();
+					arg0.dismiss();
+				}
+			});
+			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					arg0.dismiss();
+				}
+			});
+			builder.show();
 		}
 	}
 

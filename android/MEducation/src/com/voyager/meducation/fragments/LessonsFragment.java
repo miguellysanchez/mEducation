@@ -2,14 +2,21 @@ package com.voyager.meducation.fragments;
 
 import java.util.ArrayList;
 
+import com.aviary.android.feather.FeatherActivity;
+import com.aviary.android.feather.library.Constants;
 import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
 import com.voyager.meducation.activities.MainPageActivity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -97,6 +105,30 @@ public class LessonsFragment extends Fragment {
 
 			}
 
+		});
+		
+		listLessons.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View v, int position,
+					long id) {
+				final String targetName = parent.getItemAtPosition(position).toString();
+				CharSequence[] items = {"View lesson resources in lesson "+targetName};
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.create();
+				builder.setItems(items, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int item) {
+						if(item==0){
+							((MainPageActivity)getActivity()).goToLessonResources(null, targetName);
+						}
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+				return false;
+			}
 		});
 		
 		

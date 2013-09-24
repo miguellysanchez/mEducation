@@ -65,7 +65,7 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.take_exam_photo_activity);
-
+		getActionBar().setTitle("MEducation - Test Scanner");
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		// Camera settings
@@ -109,6 +109,9 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
 				mCamera = Camera.open();
+				if(mCamera==null){
+					Log.e(TAG,">>>>GGGGUUU");
+				}
 				mCamera.setDisplayOrientation(90);
 				mCamera.startPreview();
 //				Camera.Parameters params = mCamera.getParameters();
@@ -187,8 +190,9 @@ public class TakeExamPhotoActivity extends Activity implements OnClickListener, 
 		@Override
 		protected String doInBackground(byte[]... args) {
 			File pictureFileDir = getDir();
-
+			Log.i(TAG, pictureFileDir.getAbsolutePath());//
 			byte[] data = args[0];
+			pictureFileDir.mkdirs();
 			
 			if (!pictureFileDir.exists() && !pictureFileDir.mkdirs()) {
 				cancel(true);

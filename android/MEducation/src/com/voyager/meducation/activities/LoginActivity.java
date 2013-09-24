@@ -44,6 +44,8 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActionBar().setTitle("MEducation");
+
 		Log.d(TAG, ">>>ONCREATE");
 
 		// Build the android auth session, then use that to get the dropboxApi
@@ -69,7 +71,7 @@ public class LoginActivity extends Activity {
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								LoginActivity.this);
 						builder.setTitle("Demo Login Instructions");
-						builder.setMessage("To login as a Teacher:\n   Input \"Teacher\" in USERNAME field\n\nTo login as a Proctor:\n   Input \"Proctor\" in USERNAME field\n\nOtherwise, USERNAME is registered as student account\n\n\nLastly, PASSWORD field should match USERNAME field\nto be able to successfully login");
+						builder.setMessage("To login as a Teacher:\n   Input \"teacher\" in USERNAME field\n\nTo login as a Proctor:\n   Input \"proctor\" in USERNAME field\n\nOtherwise, USERNAME is registered as student account\n\n\nLastly, PASSWORD is disabled in this demo");
 						builder.show();
 					}
 				});
@@ -77,59 +79,56 @@ public class LoginActivity extends Activity {
 		findViewById(R.id.btnLogin).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mDBApi.getSession().authenticationSuccessful()) {
-					EditText editLoginUsername = (EditText) findViewById(R.id.editLoginUsername);
-					EditText editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
-					boolean isMatch = editLoginUsername.getText().toString()
-							.equals(editLoginPassword.getText().toString())
-							&& !editLoginUsername.getText().toString()
-									.isEmpty();
-					if (isMatch) {
-						if (editLoginUsername.getText().toString()
-								.contains("Teacher")) {
-							Toast.makeText(getApplicationContext(),
-									"LOGGED IN AS A TEACHER", Toast.LENGTH_LONG)
-									.show();
-							((MEducationApplication) getApplication())
-									.setAccountType(MEducationApplication.TEACHER);
-						} else if (editLoginUsername.getText().toString()
-								.contains("Proctor")
-								&& isMatch) {
-							Toast.makeText(getApplicationContext(),
-									"LOGGED IN AS A PROCTOR", Toast.LENGTH_LONG)
-									.show();
-							((MEducationApplication) getApplication())
-									.setAccountType(MEducationApplication.PROCTOR);
-						} else if (isMatch) {
-							Toast.makeText(getApplicationContext(),
-									"LOGGED IN AS A STUDENT", Toast.LENGTH_LONG)
-									.show();
-							((MEducationApplication) getApplication())
-									.setAccountType(MEducationApplication.STUDENT);
-						}
-						((MEducationApplication) getApplication())
-								.setUsername(editLoginUsername.getText()
-										.toString());
-						Log.d(TAG, ">>>LOGGING");
-						// START MAINPAGEACTIVITY
-						Intent dashboardIntent = new Intent(LoginActivity.this,
-								MainPageActivity.class);
-						((MEducationApplication) getApplication())
-								.setIsLoggedIn(true); // if
-						startActivity(dashboardIntent);
-						overridePendingTransition(R.anim.right_slide_in,
-								R.anim.left_slide_out);
-					} else {
+				// if (mDBApi.getSession().authenticationSuccessful()) {
+				EditText editLoginUsername = (EditText) findViewById(R.id.editLoginUsername);
+				EditText editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
+				boolean isMatch = true;//editLoginUsername.getText().toString().equals(editLoginPassword.getText().toString())	&& !editLoginUsername.getText().toString().isEmpty();
+				if (isMatch) {
+					if (editLoginUsername.getText().toString()
+							.contains("teacher")) {
 						Toast.makeText(getApplicationContext(),
-								"INVALID LOGIN", Toast.LENGTH_LONG).show();
+								"LOGGED IN AS A TEACHER", Toast.LENGTH_LONG)
+								.show();
+						((MEducationApplication) getApplication())
+						.setAccountType(MEducationApplication.TEACHER);
+					} 
+					else if (editLoginUsername.getText().toString()
+							.contains("proctor")
+							&& isMatch) {
+						Toast.makeText(getApplicationContext(),
+								"LOGGED IN AS A PROCTOR", Toast.LENGTH_LONG)
+								.show();
+						((MEducationApplication) getApplication())
+						.setAccountType(MEducationApplication.PROCTOR);
+					} 
+					else{
+						Toast.makeText(getApplicationContext(),
+								"LOGGED IN AS A STUDENT", Toast.LENGTH_LONG)
+								.show();
+						((MEducationApplication) getApplication())
+						.setAccountType(MEducationApplication.STUDENT);
 					}
-
+					((MEducationApplication)getApplication()).setUsername(editLoginUsername.getText().toString());
+					Log.d(TAG, ">>>LOGGING");
+					//START MAINPAGEACTIVITY
+					Intent dashboardIntent = new Intent(LoginActivity.this,
+							MainPageActivity.class);
+					((MEducationApplication) getApplication()).setIsLoggedIn(true); // if
+					startActivity(dashboardIntent);
+					overridePendingTransition(R.anim.right_slide_in,
+							R.anim.left_slide_out);
 				} else {
-					Toast.makeText(LoginActivity.this,
-							"Cannot login without link to Dropbox",
-							Toast.LENGTH_SHORT).show();
-					mDBApi.getSession().startAuthentication(LoginActivity.this);
+					Toast.makeText(getApplicationContext(), "INVALID LOGIN",
+							Toast.LENGTH_LONG).show();
 				}
+				
+				// }
+				// else{
+				// Toast.makeText(LoginActivity.this,
+				// "Cannot login without link to Dropbox",
+				// Toast.LENGTH_SHORT).show();
+				// mDBApi.getSession().startAuthentication(LoginActivity.this);
+				// }
 			}
 		});
 

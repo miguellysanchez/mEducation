@@ -3,7 +3,9 @@ package com.voyager.meducation.fragments;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.voyager.meducation.MEducationApplication;
 import com.voyager.meducation.R;
@@ -52,6 +55,30 @@ public class SubjectsFragment extends Fragment {
 
 			}
 
+		});
+		
+		listSubjects.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View v, int position,
+					long id) {
+				final String targetName = parent.getItemAtPosition(position).toString();
+				CharSequence[] items = {"View lesson resources in subject: "+targetName};
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.create();
+				builder.setItems(items, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int item) {
+						if(item==0){
+							((MainPageActivity)getActivity()).goToLessonResources(targetName, null);
+						}
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+				return false;
+			}
 		});
 		// Inflate the layout for this fragment
         return thisView;

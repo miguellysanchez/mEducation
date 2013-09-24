@@ -43,7 +43,7 @@ import android.widget.Spinner;
 
 public class CreateLessonActivity extends Activity {
 
-	private static final int REQUEST_FILE_SELECT_CODE = 0;
+	private static final int REQUEST_FILE_SELECT_CODE = 1887;
 	private static final int REQUEST_IMAGE_CAPTURE = 1888;
 	private static final int REQUEST_VIDEO_CAPTURE = 1889;
 	private static final String TEMP_VIDEO_NAME = "MEducation_temp_video_";
@@ -81,11 +81,15 @@ public class CreateLessonActivity extends Activity {
 					LinearLayout ll =((LinearLayout)v);
 					RelativeLayout rl = ((RelativeLayout)ll.getChildAt(0));
 					String path = ((TextView)rl.findViewById(R.id.extraTextLessonResource)).getText().toString();	
-					String resourcePartName = ((EditText)rl.findViewById(R.id.extraEditLessonResourceName)).getText().toString();
-					String subjectPartName = ((Spinner)findViewById(R.id.dropdownCreateLessonSubjectsList)).getSelectedItem().toString();
-					String lessonPartName = ((EditText)findViewById(R.id.editLessonTitle)).getText().toString();
-					String fileName = subjectPartName+"_"+lessonPartName+"_-_-_"+resourcePartName+"_"+DateUtils.getDateString();
-					copyFile(path, fileName);
+					
+					//Check if no lesson resource
+					if(path != null && !path.isEmpty()){
+						String resourcePartName = ((EditText)rl.findViewById(R.id.extraEditLessonResourceName)).getText().toString();
+						String subjectPartName = ((Spinner)findViewById(R.id.dropdownCreateLessonSubjectsList)).getSelectedItem().toString();
+						String lessonPartName = ((EditText)findViewById(R.id.editLessonTitle)).getText().toString();
+						String fileName = subjectPartName+"_"+lessonPartName+"_-_-_"+resourcePartName+"_"+DateUtils.getDateString();
+						copyFile(path, fileName);
+					}
 				}
 			
 				finish();
@@ -143,6 +147,7 @@ public class CreateLessonActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
+//		Log.i(TAG, ">>>resCode: "+resultCode+"|SIZE:"+listLessonFields.size()+" | RESOURCEINDEX: "+lessonResourceIndex);
 		if (resultCode == RESULT_OK) {
 			
 			if(data==null){
@@ -172,9 +177,9 @@ public class CreateLessonActivity extends Activity {
 				((TextView)rl.findViewById(R.id.extraTextLessonResource)).setText(path);
 				
 				Log.d(TAG, ">>>File Path: " + path+" |  "+lessonResourceIndex);
-				// Get the file instance
-				// File file = new File(path);
-				// Initiate the upload
+//				 Get the file instance
+//				 File file = new File(path);
+//				 Initiate the upload
 				lessonResourceIndex = -1;
 				break;
 			case REQUEST_VIDEO_CAPTURE:
@@ -215,6 +220,7 @@ public class CreateLessonActivity extends Activity {
 	}
 	
 	public boolean copyFile(String from, String fileName) {
+		Log.e(TAG, ">>>FROM: "+from);
 		String extension = from.substring(from.lastIndexOf("."));
 		Log.i(TAG,"Copy from: "+from+" | fileName: "+fileName+extension);
 		try {

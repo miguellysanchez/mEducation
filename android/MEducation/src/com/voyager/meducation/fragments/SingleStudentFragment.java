@@ -35,7 +35,7 @@ public class SingleStudentFragment extends Fragment {
 	
 	public static final String TAG = SingleStudentFragment.class.getSimpleName();
 	private View thisView;
-	private static final int MAX_IMAGE_SIZE = 1024*1024*200; //200 KB
+	public static final int MAX_IMAGE_SIZE = 1024*1024*200; //200 KB
 	
 	String studentName=null;
 	ArrayList<File> selectedFiles;
@@ -50,7 +50,7 @@ public class SingleStudentFragment extends Fragment {
 		allSelectedFiles = sourceDir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
-				if(!f.isDirectory()&&f.getName().split("_").length>3&& ( f.getName().split("_")[3].equals(studentName)||f.getName().split("_")[3].equals("-")  )){
+				if(!f.isDirectory()&&f.getName().split("_").length>3&& f.getName().split("_")[3].equals(studentName)){
 					Log.i(TAG,">>>New file"+ f.getPath() + " | Name: "+f.getName());
 					return true;
 				}
@@ -163,7 +163,5 @@ public class SingleStudentFragment extends Fragment {
 				.getExternalStorageDirectory();
 		return new File(sdDir, "MEducation");
 	}
-	
- 
 	
 }

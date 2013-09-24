@@ -1891,17 +1891,17 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_stickers=0x7f020094;
     }
     public static final class id {
-        public static final int action_add_classroom=0x7f06009e;
-        public static final int action_add_image_resource=0x7f060096;
-        public static final int action_add_lesson=0x7f06009d;
-        public static final int action_add_student=0x7f06009f;
-        public static final int action_add_subject=0x7f06009c;
-        public static final int action_add_video_resource=0x7f060097;
-        public static final int action_camera_test=0x7f060099;
-        public static final int action_check_subject_grade=0x7f06009b;
-        public static final int action_settings=0x7f0600a0;
-        public static final int action_sync=0x7f06009a;
-        public static final int action_view_grade=0x7f060098;
+        public static final int action_add_classroom=0x7f06009f;
+        public static final int action_add_image_resource=0x7f060097;
+        public static final int action_add_lesson=0x7f06009e;
+        public static final int action_add_student=0x7f0600a0;
+        public static final int action_add_subject=0x7f06009d;
+        public static final int action_add_video_resource=0x7f060098;
+        public static final int action_camera_test=0x7f06009a;
+        public static final int action_check_subject_grade=0x7f06009c;
+        public static final int action_settings=0x7f0600a1;
+        public static final int action_sync=0x7f06009b;
+        public static final int action_view_grade=0x7f060099;
         public static final int aviary_bottom_line=0x7f060046;
         public static final int aviary_bottombar=0x7f060036;
         public static final int aviary_button=0x7f06002c;
@@ -1958,8 +1958,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int aviary_workspace=0x7f06002e;
         public static final int aviary_workspace_container=0x7f06002d;
         public static final int aviary_workspace_indicator=0x7f06002f;
-        public static final int back=0x7f060093;
-        public static final int backLayout=0x7f060092;
+        public static final int back=0x7f060094;
+        public static final int backLayout=0x7f060093;
         public static final int btnAddCreateLessonField=0x7f060068;
         public static final int btnCreateNewLesson=0x7f060061;
         public static final int btnDemoHelp=0x7f060072;
@@ -2003,6 +2003,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int image=0x7f060015;
         public static final int image_loading_view=0x7f060038;
         public static final int imagegl=0x7f060018;
+        public static final int listAllLessonResources=0x7f060091;
         public static final int listClassrooms=0x7f060060;
         public static final int listDashboardTasks=0x7f060069;
         public static final int listFiles=0x7f060089;
@@ -2029,7 +2030,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int scrollCreateLessonFields=0x7f060062;
         public static final int scrollRegistrationFields=0x7f060076;
         public static final int selected=0x7f060002;
-        public static final int shadow=0x7f060095;
+        public static final int shadow=0x7f060096;
         public static final int size_preview=0x7f06005f;
         public static final int surface=0x7f06008e;
         public static final int text=0x7f060024;
@@ -2046,12 +2047,12 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int textPassword=0x7f060085;
         public static final int textProctorRegister=0x7f06006e;
         public static final int textTeacherRegister=0x7f060070;
-        public static final int textTitle=0x7f060094;
+        public static final int textTitle=0x7f060095;
         public static final int textUsername=0x7f060083;
         public static final int textView1=0x7f06006f;
         public static final int top_down=0x7f060003;
         public static final int vertical=0x7f060009;
-        public static final int window_title=0x7f060091;
+        public static final int window_title=0x7f060092;
     }
     public static final class integer {
         /**  
@@ -2267,7 +2268,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int student_classroom_fragment=0x7f030042;
         public static final int subjects_fragment=0x7f030043;
         public static final int take_exam_photo_activity=0x7f030044;
-        public static final int window_title=0x7f030045;
+        public static final int view_lesson_resources_activity=0x7f030045;
+        public static final int window_title=0x7f030046;
     }
     public static final class menu {
         public static final int action_bar_menu_create_lesson=0x7f0d0000;

@@ -34,17 +34,17 @@ public class DashboardFragment extends Fragment {
 
 		if(acctType.equals(MEducationApplication.TEACHER)){
 			values = new String[]{
-		        	"View subjects", "Edit Profile", "Create new lesson","Logout"
+		        	"View subjects", "View all lesson resources", "Create new lesson","Logout"
 	        };
 		}
 		else if(acctType.equals(MEducationApplication.PROCTOR)){
 			values = new String[]{
-		        	"View subjects", "Edit Profile", "Logout"
+		        	"View subjects", "View all lesson resources", "Logout"
 		    };
 		}
 		else if(acctType.equals(MEducationApplication.STUDENT)){
 			values = new String[]{
-		        	"View subjects", "Edit Profile", "Logout"
+		        	"View subjects", "View all lesson resources", "Logout"
 		    };
 		}
         
@@ -66,6 +66,7 @@ public class DashboardFragment extends Fragment {
 					((MainPageActivity)getActivity()).goToSubjects();
 					break;
 				case 1:
+					((MainPageActivity)getActivity()).goToLessonResources(null, null);
 					break;
 				case 2:
 					if(acctType.equals(MEducationApplication.TEACHER)){
